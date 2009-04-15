@@ -16,7 +16,7 @@ Subscribe-Widget has been dessogned to be very practical, as the blog admin allo
 
 Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will be not resized. The same applies to the image height.
 
-Plugins idea author: [computersafertytip.com](http://www.computersafertytip.com)
+Plugins idea author: [http://www.computersafetytip.com](http://www.computersafetytip.com)
 
 == Installation ==
 1. Download `subscribe-widget` plugin from www.pclastnews.com and unzip it.

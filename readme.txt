@@ -1,7 +1,7 @@
 ﻿=== Subscribe Widget ===
 Contributors: Kęstas Mindžiulis
 Donate link: http://www.pclastnews.com/subscribe-widget.html
-Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader, google
+Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader
 Requires at least: 2.3
 Tested up to: 2.7.1
 Stable tag: 1.0
@@ -10,33 +10,13 @@ Sidebar widget to easy customize and display your subscribers buttons. All setti
 
 
 == Description ==
-Subscribe-Widget is a free wordpress plugin, which was designed to be used by all bloggers wishing to inform readers about specific information,
+Subscribe-Widget is a free wordpress plugin, which was designed to be used by all bloggers wishing to inform readers about specific information, in a fast and reliable way. This plug-in will create: rss2, comments rss, twitter and feedburner icons on your blog sidebar. These icons will in turn lead readers to your rss, twitter, feedburner and comments rss, accordingly,  readers will tehn be able to find the latest news on your blog. If you want you can disable these icons one by one and only leave those which are needed. To enable the twitter and feedburner icons, one should have acounts on www.twitter.com and www.feedburner.com, as the plugin creates links to these blog accounts. 
 
-in a fast and reliable way. This plug-in will create: rss2, comments rss, twitter and feedburner icons on your blog sidebar. These icons will 
+Subscribe-Widget has been dessogned to be very practical, as the blog admin allows for one to be able to choose your icons‘ width and height, allows for one to be able to write a title (which will appear above the icons), one will also be able to choose hwo to align the icons (left, center, right), as well as beign able to disable these icons one by one. Should you be struggling to find the right icon, you can also upload one by yourself. Go to: plugins directory /wp-content/plugins/subscribe-widget/images/. New uploaded icons may vary in size, as the Subscribe-Widget plugin will resize the icon to the needed width or height, however images should be no smaller then 50×50 pixels. So, by choosing to use this plug-in, one can choose how to display your icons, as it is all up to you, the blogger.
 
-in turn lead readers to your rss, twitter, feedburner and comments rss, accordingly,  readers will tehn be able to find the latest news on your 
+Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will be not resized. The same applies to the image height.
 
-blog. If you want you can disable these icons one by one and only leave those which are needed. To enable the twitter and feedburner icons, one 
-
-should have acounts on www.twitter.com and www.feedburner.com, as the plugin creates links to these blog accounts. 
-
-Subscribe-Widget has been dessogned to be very practical, as the blog admin allows for one to be able to choose your icons‘ width and height, 
-
-allows for one to be able to write a title (which will appear above the icons), one will also be able to choose hwo to align the icons (left, 
-
-center, right), as well as beign able to disable these icons one by one.
-
-Should you be struggling to find the right icon, you can also upload one by yourself. Go to: plugins directory
-
-/wp-content/plugins/subscribe-widget/images/. New uploaded icons may vary in size, as the Subscribe-Widget plugin will resize the icon to the
-
-needed width or height, however images should be no smaller then 50×50 pixels. So, by choosing to use this plug-in, one can choose how to display 
-
-your icons, as it is all up to you, the blogger.
-
-Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will 
-
-be not resized. The same applies to the image height.
+Plugins idea author: [computersafertytip.com](http://www.computersafertytip.com)
 
 == Installation ==
 1. Download `subscribe-widget` plugin from www.pclastnews.com and unzip it.
@@ -46,7 +26,6 @@ be not resized. The same applies to the image height.
 5. After the page reloads on the widget `Subscribe widget` at right, click `Edit`, set all the information and select images.
 6. Click `Done` and `Save Changes` to the sidebar from the button bellow
 7. You are ready, check the subscribers buttons in the sidebar of your favorite WordPress blog
-
 
 
 == Frequently Asked Questions == 
@@ -61,8 +40,7 @@ be not resized. The same applies to the image height.
 
 == Licence ==
 
-Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://www.pclastnews.com/subscribe-widget.html") for the time I’ve spent writing and supporting this plugin. And I really don’t want to know how many hours of my life this plugin has already eaten ;)
-
+Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://www.pclastnews.com/subscribe-widget.html) for the time I’ve spent writing and supporting this plugin. And I really don’t want to know how many hours of my life this plugin has already eaten ;)
 
 
 Good luck!

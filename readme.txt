@@ -28,7 +28,6 @@ Plugins idea author: [computersafertytip.com](http://www.computersafertytip.com)
 7. You are ready, check the subscribers buttons in the sidebar of your favorite WordPress blog
 
 
-
 == Frequently Asked Questions == 
 
 == Screenshots ==

@@ -16,6 +16,8 @@ Subscribe-Widget has been dessogned to be very practical, as the blog admin allo
 
 Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will be not resized. The same applies to the image height.
 
+Plugins idea author: [computersafertytip.com](http://www.computersafertytip.com)
+
 == Installation ==
 1. Download `subscribe-widget` plugin from www.pclastnews.com and unzip it.
 2. Upload the folder `subscribe-widget` to your WP plugin folder `/wp-content/plugins/` directory
@@ -40,7 +42,6 @@ Important to note: Images will be resized, firstly by width and then by height. 
 == Licence ==
 
 Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://www.pclastnews.com/subscribe-widget.html) for the time I’ve spent writing and supporting this plugin. And I really don’t want to know how many hours of my life this plugin has already eaten ;)
-Plugins idea author: [computersafertytip.com](http://www.computersafertytip.com)
 
 
 Good luck!

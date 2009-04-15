@@ -10,33 +10,11 @@ Sidebar widget to easy customize and display your subscribers buttons. All setti
 
 
 == Description ==
-Subscribe-Widget is a free wordpress plugin, which was designed to be used by all bloggers wishing to inform readers about specific information,
+Subscribe-Widget is a free wordpress plugin, which was designed to be used by all bloggers wishing to inform readers about specific information, in a fast and reliable way. This plug-in will create: rss2, comments rss, twitter and feedburner icons on your blog sidebar. These icons will in turn lead readers to your rss, twitter, feedburner and comments rss, accordingly,  readers will tehn be able to find the latest news on your blog. If you want you can disable these icons one by one and only leave those which are needed. To enable the twitter and feedburner icons, one should have acounts on www.twitter.com and www.feedburner.com, as the plugin creates links to these blog accounts. 
 
-in a fast and reliable way. This plug-in will create: rss2, comments rss, twitter and feedburner icons on your blog sidebar. These icons will 
+Subscribe-Widget has been dessogned to be very practical, as the blog admin allows for one to be able to choose your icons‘ width and height, allows for one to be able to write a title (which will appear above the icons), one will also be able to choose hwo to align the icons (left, center, right), as well as beign able to disable these icons one by one. Should you be struggling to find the right icon, you can also upload one by yourself. Go to: plugins directory /wp-content/plugins/subscribe-widget/images/. New uploaded icons may vary in size, as the Subscribe-Widget plugin will resize the icon to the needed width or height, however images should be no smaller then 50×50 pixels. So, by choosing to use this plug-in, one can choose how to display your icons, as it is all up to you, the blogger.
 
-in turn lead readers to your rss, twitter, feedburner and comments rss, accordingly,  readers will tehn be able to find the latest news on your 
-
-blog. If you want you can disable these icons one by one and only leave those which are needed. To enable the twitter and feedburner icons, one 
-
-should have acounts on www.twitter.com and www.feedburner.com, as the plugin creates links to these blog accounts. 
-
-Subscribe-Widget has been dessogned to be very practical, as the blog admin allows for one to be able to choose your icons‘ width and height, 
-
-allows for one to be able to write a title (which will appear above the icons), one will also be able to choose hwo to align the icons (left, 
-
-center, right), as well as beign able to disable these icons one by one.
-
-Should you be struggling to find the right icon, you can also upload one by yourself. Go to: plugins directory
-
-/wp-content/plugins/subscribe-widget/images/. New uploaded icons may vary in size, as the Subscribe-Widget plugin will resize the icon to the
-
-needed width or height, however images should be no smaller then 50×50 pixels. So, by choosing to use this plug-in, one can choose how to display 
-
-your icons, as it is all up to you, the blogger.
-
-Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will 
-
-be not resized. The same applies to the image height.
+Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will be not resized. The same applies to the image height.
 
 == Installation ==
 1. Download `subscribe-widget` plugin from www.pclastnews.com and unzip it.

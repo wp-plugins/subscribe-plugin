@@ -1,7 +1,7 @@
 ﻿=== Subscribe Widget ===
 Contributors: Kęstas Mindžiulis
 Donate link: http://www.pclastnews.com/subscribe-widget.html
-Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader, google
+Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader
 Requires at least: 2.3
 Tested up to: 2.7.1
 Stable tag: 1.0
@@ -39,8 +39,8 @@ Important to note: Images will be resized, firstly by width and then by height. 
 
 == Licence ==
 
-Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://www.pclastnews.com/subscribe-widget.html") for the time I’ve spent writing and supporting this plugin. And I really don’t want to know how many hours of my life this plugin has already eaten ;)
-
+Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://www.pclastnews.com/subscribe-widget.html) for the time I’ve spent writing and supporting this plugin. And I really don’t want to know how many hours of my life this plugin has already eaten ;)
+Plugins idea author: [computersafertytip.com](http://www.computersafertytip.com)
 
 
 Good luck!

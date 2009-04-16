@@ -10,7 +10,7 @@ Sidebar widget to easy customize and display your subscribers buttons. All setti
 
 
 == Description ==
-Important: There was some problems with plugin. I have made changes, so now plugin works like it should. If you using 1.0 version, please update it to the 1.0.1 version and reactivate the plugin from admin panel (deactivate and then activate again).
+Important: There was some problems with plugin. I have made changes, so now plugin works like it should. If you using 1.0 version, please update it to the 1.0.1 version and reactivate the plugin from admin panel (deactivate and then activate again) and resave widget settings from `Widgets`.
 
 Subscribe-Widget is a free wordpress plugin, which was designed to be used by all bloggers wishing to inform readers about specific information, in a fast and reliable way. This plug-in will create: rss2, comments rss, twitter and feedburner icons on your blog sidebar. These icons will in turn lead readers to your rss, twitter, feedburner and comments rss, accordingly,  readers will tehn be able to find the latest news on your blog. If you want you can disable these icons one by one and only leave those which are needed. To enable the twitter and feedburner icons, one should have acounts on www.twitter.com and www.feedburner.com, as the plugin creates links to these blog accounts. 
 

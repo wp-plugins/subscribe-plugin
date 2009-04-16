@@ -4,7 +4,7 @@ Donate link: http://www.pclastnews.com/subscribe-widget.html
 Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader
 Requires at least: 2.3
 Tested up to: 2.7.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 Sidebar widget to easy customize and display your subscribers buttons. All settings are available from Sidebar Widget Admin.
 

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.0
+Version: 1.0.1
 Plugin URI: http://www.pclastnews.com/subscribe-widget.html
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -98,8 +98,8 @@ class SubscribeWidget {
         $sw_twitter = $options['sw-twitter'];
         $sw_feedburner = $options['sw-feedburner'];
         
-        $all_images_url = get_option("home").'/subscribe-widged/';
-        $all_images_dir = ABSPATH.'subscribe-widged/';
+        $all_images_url = get_option("home").'/subscribe-widget/';
+        $all_images_dir = ABSPATH.'subscribe-widget/';
         
         // These lines generate our output.
         if( $sw_postsfeed['show'] == 1 || $sw_commentsfeed['show'] == 1 || $sw_twitter['show'] == 1 || $sw_feedburner['show'] == 1 ){
@@ -175,35 +175,35 @@ class SubscribeWidget {
             $options['sw-align'] = $_POST['sw-align'];
             
             $resize = new ResizeComponent();
-            $all_images_dir = ABSPATH.'wp-content/plugins/subscribe-widget/images/';
-            if( !is_dir( ABSPATH.'subscribe-widged/' ) ){
-                mkdir( ABSPATH.'subscribe-widged/', 0777 );
+            $all_images_dir = ABSPATH.'wp-content/plugins/subscribe-plugin/images/';
+            if( !is_dir( ABSPATH.'subscribe-widget/' ) ){
+                mkdir( ABSPATH.'subscribe-widget/', 0777 );
             }
-            if( is_dir( ABSPATH.'subscribe-widged/' ) ){
+            if( is_dir( ABSPATH.'subscribe-widget/' ) ){
                 if( is_file( $all_images_dir.'posts-feed/'.$_POST['sw-postsfeed']['image'] ) ){
                     $image_ext = sw_getExtension( $_POST['sw-postsfeed']['image'] );
-                    copy( $all_images_dir.'posts-feed/'.$_POST['sw-postsfeed']['image'], ABSPATH.'subscribe-widged/postsfeed.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widged/postsfeed.'.$image_ext;
+                    copy( $all_images_dir.'posts-feed/'.$_POST['sw-postsfeed']['image'], ABSPATH.'subscribe-widget/postsfeed.'.$image_ext ) ;
+                    $image = ABSPATH.'subscribe-widget/postsfeed.'.$image_ext;
                     sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
                 }
                 
                 if( is_file( $all_images_dir.'comments-feed/'.$_POST['sw-commentsfeed']['image'] ) ){
                     $image_ext = sw_getExtension( $_POST['sw-commentsfeed']['image'] );
-                    copy( $all_images_dir.'comments-feed/'.$_POST['sw-commentsfeed']['image'], ABSPATH.'subscribe-widged/commentsfeed.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widged/commentsfeed.'.$image_ext;
+                    copy( $all_images_dir.'comments-feed/'.$_POST['sw-commentsfeed']['image'], ABSPATH.'subscribe-widget/commentsfeed.'.$image_ext ) ;
+                    $image = ABSPATH.'subscribe-widget/commentsfeed.'.$image_ext;
                     sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
                 }
                 if( is_file( $all_images_dir.'twitter/'.$_POST['sw-twitter']['image'] ) ){
                     $image_ext = sw_getExtension( $_POST['sw-twitter']['image'] );
-                    copy( $all_images_dir.'twitter/'.$_POST['sw-twitter']['image'], ABSPATH.'subscribe-widged/twitter.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widged/twitter.'.$image_ext;
+                    copy( $all_images_dir.'twitter/'.$_POST['sw-twitter']['image'], ABSPATH.'subscribe-widget/twitter.'.$image_ext ) ;
+                    $image = ABSPATH.'subscribe-widget/twitter.'.$image_ext;
                     sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
                 }
                 
                 if( is_file( $all_images_dir.'feedburner/'.$_POST['sw-feedburner']['image'] ) ){
                     $image_ext = sw_getExtension( $_POST['sw-feedburner']['image'] );
-                    copy( $all_images_dir.'feedburner/'.$_POST['sw-feedburner']['image'], ABSPATH.'subscribe-widged/feedburner.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widged/feedburner.'.$image_ext;
+                    copy( $all_images_dir.'feedburner/'.$_POST['sw-feedburner']['image'], ABSPATH.'subscribe-widget/feedburner.'.$image_ext ) ;
+                    $image = ABSPATH.'subscribe-widget/feedburner.'.$image_ext;
                     sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
                 }
                 
@@ -222,26 +222,26 @@ class SubscribeWidget {
                 
         $feedimages_temp = array();
         $feedimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-widget/images/posts-feed/' ) ){
-        $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-widget/images/posts-feed/', $feedimages_temp );
+        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/posts-feed/' ) ){
+        $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/posts-feed/', $feedimages_temp );
         $this->sw_GetFilesFromPath( $feedimages_temp, $feedimages );
         }
         $commentsfeedimages_temp = array();
         $commentsfeedimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-widget/images/comments-feed/' ) ){
-            $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-widget/images/comments-feed/', $commentsfeedimages_temp );
+        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/comments-feed/' ) ){
+            $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/comments-feed/', $commentsfeedimages_temp );
             $this->sw_GetFilesFromPath( $commentsfeedimages_temp, $commentsfeedimages );
         }
         $twitterimages_temp = array();
         $twitterimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-widget/images/twitter/' ) ){
-            $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-widget/images/twitter/', $twitterimages_temp );
+        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/twitter/' ) ){
+            $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/twitter/', $twitterimages_temp );
             $this->sw_GetFilesFromPath( $twitterimages_temp, $twitterimages );
         }
         $feedburnerimages_temp = array();
         $feedburnerimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-widget/images/feedburner/' ) ){
-            $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-widget/images/feedburner/', $feedburnerimages_temp );
+        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/feedburner/' ) ){
+            $this->sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/feedburner/', $feedburnerimages_temp );
             $this->sw_GetFilesFromPath( $feedburnerimages_temp, $feedburnerimages );
         }
         
@@ -293,9 +293,9 @@ class SubscribeWidget {
         <p style="text-align:right">
             <label for="sw-postsfeed-image">' . __('Posts Feed Image:') . '</label> 
             <select id="sw-postsfeed-image" name="sw-postsfeed[image]"
-                onchange="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
-                onkeydown="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
-                onkeyup="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;" >
+                onchange="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
+                onkeydown="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
+                onkeyup="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;" >
                 <option value="">-</option>';
         if( $feedimages ){
             foreach( $feedimages as $image ){
@@ -310,7 +310,7 @@ class SubscribeWidget {
         echo '  </select>
         </p>
         <p style="text-align:right">
-            <img id="postsfeed-image" src="'.get_option("home").'/wp-content/plugins/subscribe-widget/images/posts-feed/'.$sw_postsfeed['image'].'" style="height:50px; border: 1px solid #000000;" />
+            <img id="postsfeed-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/'.$sw_postsfeed['image'].'" style="height:50px; border: 1px solid #000000;" />
         </p>
         </fieldset>
         
@@ -325,9 +325,9 @@ class SubscribeWidget {
         <p style="text-align:right">
             <label for="sw-commentsfeed-image">' . __('Comments Feed Image:') . '</label> 
             <select id="sw-commentsfeed-image" name="sw-commentsfeed[image]"
-                onchange="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;"
-                onkeydown="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;"
-                onkeyup="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;" >
+                onchange="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;"
+                onkeydown="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;"
+                onkeyup="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;" >
                 <option value="">-</option>';
         if( $commentsfeedimages ){
             foreach( $commentsfeedimages as $image ){
@@ -342,7 +342,7 @@ class SubscribeWidget {
         echo '  </select>
         </p>
         <p style="text-align:right">
-            <img id="commentsfeed-image" src="'.get_option("home").'/wp-content/plugins/subscribe-widget/images/comments-feed/'.$sw_commentsfeed['image'].'" style="height:50px; border: 1px solid #000000;" />
+            <img id="commentsfeed-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/'.$sw_commentsfeed['image'].'" style="height:50px; border: 1px solid #000000;" />
         </p>
         </fieldset>
     
@@ -361,9 +361,9 @@ class SubscribeWidget {
         <p style="text-align:right">';
         echo '<label for="sw-twitter-image">' . __('Twitter Image:') . '</label> 
             <select id="sw-twitter-image" name="sw-twitter[image]" style="width: 100px;" 
-            onchange="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;"
-            onkeydown="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;"
-            onkeyup="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;" >
+            onchange="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;"
+            onkeydown="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;"
+            onkeyup="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;" >
                 <option value="">-</option>';
         if( $twitterimages ){
             foreach( $twitterimages as $image ){
@@ -378,7 +378,7 @@ class SubscribeWidget {
         echo '  </select>
         </p>
         <p style="text-align:right">
-            <img id="twitter-image" src="'.get_option("home").'/wp-content/plugins/subscribe-widget/images/twitter/'.$sw_twitter['image'].'" style="height:50px; border: 1px solid #000000;" />
+            <img id="twitter-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/'.$sw_twitter['image'].'" style="height:50px; border: 1px solid #000000;" />
         </p>
         </fieldset>
         
@@ -397,9 +397,9 @@ class SubscribeWidget {
         <p style="text-align:right">
             <label for="sw-feedburner-image">' . __('FeedBurner Image:') . '</label> 
             <select id="sw-feedburner-image" name="sw-feedburner[image]"
-                onchange="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;"
-                onkeydown="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;"
-                onkeyup="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-widget/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;" >
+                onchange="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;"
+                onkeydown="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;"
+                onkeyup="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;" >
                 <option value="">-</option>';
         if( $feedburnerimages ){
             foreach( $feedburnerimages as $image ){
@@ -414,7 +414,7 @@ class SubscribeWidget {
         echo '  </select>
         </p>
         <p style="text-align:right">
-            <img id="feedburner-image" src="'.get_option("home").'/wp-content/plugins/subscribe-widget/images/feedburner/'.$sw_feedburner['image'].'" style="height:50px; border: 1px solid #000000;" />
+            <img id="feedburner-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/'.$sw_feedburner['image'].'" style="height:50px; border: 1px solid #000000;" />
         </p>
         </fieldset>
         <p>If you have any suggestions about this plugin or it not works like it should, write to <a href="mailto:kestas.mindziulis@gmail.com">me</a></p>

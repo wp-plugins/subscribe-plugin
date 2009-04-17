@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.0.1
+Version: 1.1.0
 Plugin URI: http://www.pclastnews.com/subscribe-widget.html
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -101,6 +101,11 @@ class SubscribeWidget {
         $all_images_url = get_option("home").'/subscribe-widget/';
         $all_images_dir = ABSPATH.'subscribe-widget/';
         
+        if( !function_exists(gd_info) ){
+            $image_width = " width: ".$options['sw-image-width']."px;";
+        }
+        else { $image_width = ''; }
+        
         // These lines generate our output.
         if( $sw_postsfeed['show'] == 1 || $sw_commentsfeed['show'] == 1 || $sw_twitter['show'] == 1 || $sw_feedburner['show'] == 1 ){
             if( $title != '' ){
@@ -111,7 +116,7 @@ class SubscribeWidget {
                 $image_ext = sw_getExtension( $sw_postsfeed['image'] );
                 if( is_file( $all_images_dir.'postsfeed.'.$image_ext ) ){
                     echo '<a title="Subscribe RSS" href="'.get_feed_link().'">';
-                    echo '<img src="'.$all_images_url.'postsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="Subscribe RSS" />';
+                    echo '<img src="'.$all_images_url.'postsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe RSS" />';
                     echo '</a>';
                 }
             }
@@ -119,7 +124,7 @@ class SubscribeWidget {
                 $image_ext = sw_getExtension( $sw_commentsfeed['image'] );
                 if( is_file( $all_images_dir.'commentsfeed.'.$image_ext ) ){
                     echo '<a title="Subscribe comments RSS" href="'.get_feed_link('comments').'">';
-                    echo '<img src="'.$all_images_url.'commentsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="Subscribe comments RSS" />';
+                    echo '<img src="'.$all_images_url.'commentsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;'.$image_width.'" alt="Subscribe comments RSS" />';
                     echo '</a>';
                 }
             }
@@ -127,7 +132,7 @@ class SubscribeWidget {
                 $image_ext = sw_getExtension( $sw_twitter['image'] );
                 if( is_file( $all_images_dir.'twitter.'.$image_ext ) ){
                     echo '<a title="Follow me on Twitter" target="_blank" href="http://twitter.com/'.$sw_twitter['acount'].'">';
-                    echo '<img src="'.$all_images_url.'twitter.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="Follow me on Twitter" />';
+                    echo '<img src="'.$all_images_url.'twitter.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Follow me on Twitter" />';
                     echo '</a>';
                 }
             }
@@ -135,7 +140,7 @@ class SubscribeWidget {
                 $image_ext = sw_getExtension( $sw_feedburner['image'] );
                 if( is_file( $all_images_dir.'feedburner.'.$image_ext ) ){
                     echo '<a title="Subscribe on FeedBurner" target="_blank" rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.$sw_feedburner['acount'].'&loc=en_US">';
-                    echo '<img src="'.$all_images_url.'feedburner.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="Subscribe on FeedBurner" />';
+                    echo '<img src="'.$all_images_url.'feedburner.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe on FeedBurner" />';
                     echo '</a>';
                 }
             }
@@ -425,7 +430,7 @@ class SubscribeWidget {
 }
 /* Functions resize image by width and height. */
 function sw_resizeImage( $resize, $image, $image_height, $image_width ){
-    if( is_file( $image ) ){
+    if( is_file( $image ) && function_exists(gd_info) ){
         list( $width, $height ) = getimagesize( $image );
         if($width > $image_width){
             $thumb= $resize->Resize($image );

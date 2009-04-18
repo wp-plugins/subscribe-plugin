@@ -123,7 +123,7 @@ class SubscribeWidget {
             if( $sw_commentsfeed['show'] == 1 ){
                 $image_ext = sw_getExtension( $sw_commentsfeed['image'] );
                 if( is_file( $all_images_dir.'commentsfeed.'.$image_ext ) ){
-                    echo '<a title="Subscribe comments RSS" href="'.get_feed_link('comments').'">';
+                    echo '<a title="Subscribe comments RSS" href="'.get_feed_link('comments_').'">';
                     echo '<img src="'.$all_images_url.'commentsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;'.$image_width.'" alt="Subscribe comments RSS" />';
                     echo '</a>';
                 }

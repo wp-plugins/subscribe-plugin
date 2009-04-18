@@ -1,7 +1,7 @@
 ﻿Subscribe widget
 by Kęstas Mindžiulis
 
-V1.1.0 - 17.04.2009
+V1.1.1 - 17.04.2009
 - Bugfix : Fixed comments feed link.
 
 V1.1.0 - 17.04.2009

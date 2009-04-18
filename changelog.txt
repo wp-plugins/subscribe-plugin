@@ -1,0 +1,12 @@
+﻿Subscribe widget
+by Kęstas Mindžiulis
+
+V1.1.0 - 17.04.2009
+- Bugfix : Fixed comments feed link.
+
+V1.1.0 - 17.04.2009
+- Added : Checks for gd library in the server. If not exist, then images are resized using style (only by width).
+
+V1.0.1 - 16.04.2009
+- Changed : Renamed folder where display images are stored
+- Bugfix : Renamed folder from `subscribe-widget` to `subscribe-plugin`

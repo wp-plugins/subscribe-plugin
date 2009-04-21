@@ -1,7 +1,10 @@
 ﻿Subscribe widget
 by Kęstas Mindžiulis
 
-V1.1.1 - 17.04.2009
+V1.1.2 - 21.04.2009
+- Bugfix : Removed html tags, added WP $before_widget, $before_title and others viariales
+
+V1.1.1 - 19.04.2009
 - Bugfix : Fixed comments feed link.
 
 V1.1.0 - 17.04.2009

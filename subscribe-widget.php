@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.1.1
+Version: 1.1.2
 Plugin URI: http://www.pclastnews.com/subscribe-widget.html
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -108,10 +108,11 @@ class SubscribeWidget {
         
         // These lines generate our output.
         if( $sw_postsfeed['show'] == 1 || $sw_commentsfeed['show'] == 1 || $sw_twitter['show'] == 1 || $sw_feedburner['show'] == 1 ){
+            echo $before_widget;
             if( $title != '' ){
-                echo '<h2>'.$title.'</h2>';
+                echo $before_title . $title . $after_title;
             }
-            echo '<div id="subscribe-widget">';
+            echo '<div id="subscribe-widget-div">';
             if( $sw_postsfeed['show'] == 1  ){
                 $image_ext = sw_getExtension( $sw_postsfeed['image'] );
                 if( is_file( $all_images_dir.'postsfeed.'.$image_ext ) ){
@@ -145,6 +146,7 @@ class SubscribeWidget {
                 }
             }
             echo '</div>';
+            echo $after_widget;
         }
         
     }
@@ -459,7 +461,7 @@ function sw_wpHead(){
     if( isset( $options['sw-align'] ) ){
         if( !empty( $options['sw-align'] ) ){
             $head .= '<style type="text/css" >';
-            $head .= '#subscribe-widget { text-align: '.$options['sw-align'].'; }';
+            $head .= '#subscribe-widget-div { text-align: '.$options['sw-align'].'; }';
             $head .= '</style>';
         }
     }

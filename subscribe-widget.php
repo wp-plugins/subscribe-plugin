@@ -193,6 +193,7 @@ class SubscribeWidget {
             if( !is_dir( ABSPATH.'subscribe-widget/' ) ){
                 mkdir( ABSPATH.'subscribe-widget/', 0777 );
             }
+            else { chmod( ABSPATH.'subscribe-widget/', 0777 ); }
             if( is_dir( ABSPATH.'subscribe-widget/' ) ){
                 if( is_file( $all_images_dir.'posts-feed/'.$_POST['sw-postsfeed']['image'] ) ){
                     $image_ext = sw_getExtension( $_POST['sw-postsfeed']['image'] );
@@ -220,7 +221,7 @@ class SubscribeWidget {
                     $image = ABSPATH.'subscribe-widget/feedburner.'.$image_ext;
                     sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
                 }
-                
+                chmod( ABSPATH.'subscribe-widget/', 0755 );
             }
             update_option('subscribe_widget', $options);
         }

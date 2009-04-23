@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.1.3
+Version: 1.1.3.1
 Plugin URI: http://www.pclastnews.com/subscribe-widget.html
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -153,6 +153,7 @@ class SubscribeWidget {
                     echo '</a>';
                 }
             }
+            echo '</div>';
             echo $after_widget;
         }
         

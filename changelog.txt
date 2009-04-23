@@ -1,6 +1,8 @@
 ﻿Subscribe widget
 by Kęstas Mindžiulis
 
+V1.1.3.1 - 23.04.2009
+- Bugfix: Added html code, that was removed by acsident
 
 V1.1.3 - 23.04.2009
 - Added: Option to open links in the same or new windows

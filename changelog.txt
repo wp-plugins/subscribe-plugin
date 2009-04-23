@@ -1,6 +1,11 @@
 ﻿Subscribe widget
 by Kęstas Mindžiulis
 
+
+V1.1.3 - 23.04.2009
+- Added: Option to open links in the same or new windows
+- Added: Before widget save, changes "subscribe-widget" atributes to 0777, after save chnges to 0755.
+
 V1.1.2 - 21.04.2009
 - Bugfix : Removed html tags, added WP $before_widget, $before_title and others viariales
 

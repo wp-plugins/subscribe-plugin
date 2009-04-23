@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.1.2
+Version: 1.1.3
 Plugin URI: http://www.pclastnews.com/subscribe-widget.html
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -116,7 +116,9 @@ class SubscribeWidget {
             if( $sw_postsfeed['show'] == 1  ){
                 $image_ext = sw_getExtension( $sw_postsfeed['image'] );
                 if( is_file( $all_images_dir.'postsfeed.'.$image_ext ) ){
-                    echo '<a title="Subscribe RSS" href="'.get_feed_link().'">';
+                    if( $sw_postsfeed['link_target'] != '' ){ $target = ' target="'.$sw_postsfeed['link_target'].'" '; }
+                    else { $target = ""; }
+                    echo '<a title="Subscribe RSS" '.$target.' href="'.get_feed_link().'">';
                     echo '<img src="'.$all_images_url.'postsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe RSS" />';
                     echo '</a>';
                 }
@@ -124,7 +126,9 @@ class SubscribeWidget {
             if( $sw_commentsfeed['show'] == 1 ){
                 $image_ext = sw_getExtension( $sw_commentsfeed['image'] );
                 if( is_file( $all_images_dir.'commentsfeed.'.$image_ext ) ){
-                    echo '<a title="Subscribe comments RSS" href="'.get_feed_link('comments_').'">';
+                    if( $sw_commentsfeed['link_target'] != '' ){ $target = ' target="'.$sw_commentsfeed['link_target'].'" '; }
+                    else { $target = ""; }
+                    echo '<a title="Subscribe comments RSS" '.$target.' href="'.get_feed_link('comments_').'">';
                     echo '<img src="'.$all_images_url.'commentsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;'.$image_width.'" alt="Subscribe comments RSS" />';
                     echo '</a>';
                 }
@@ -132,7 +136,9 @@ class SubscribeWidget {
             if( $sw_twitter['show'] == 1 && $sw_twitter['acount'] != '' ){
                 $image_ext = sw_getExtension( $sw_twitter['image'] );
                 if( is_file( $all_images_dir.'twitter.'.$image_ext ) ){
-                    echo '<a title="Follow me on Twitter" target="_blank" href="http://twitter.com/'.$sw_twitter['acount'].'">';
+                    if( $sw_twitter['link_target'] != '' ){ $target = ' target="'.$sw_twitter['link_target'].'" '; }
+                    else { $target = ""; }
+                    echo '<a title="Follow me on Twitter" '.$target.' href="http://twitter.com/'.$sw_twitter['acount'].'">';
                     echo '<img src="'.$all_images_url.'twitter.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Follow me on Twitter" />';
                     echo '</a>';
                 }
@@ -140,12 +146,13 @@ class SubscribeWidget {
             if( $sw_feedburner['show'] == 1 && $sw_feedburner['acount'] != '' ){
                 $image_ext = sw_getExtension( $sw_feedburner['image'] );
                 if( is_file( $all_images_dir.'feedburner.'.$image_ext ) ){
-                    echo '<a title="Subscribe on FeedBurner" target="_blank" rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.$sw_feedburner['acount'].'&loc=en_US">';
+                    if( $sw_feedburner['link_target'] != '' ){ $target = ' target="'.$sw_feedburner['link_target'].'" '; }
+                    else { $target = ""; }
+                    echo '<a title="Subscribe on FeedBurner" '.$target.' rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.$sw_feedburner['acount'].'&loc=en_US">';
                     echo '<img src="'.$all_images_url.'feedburner.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe on FeedBurner" />';
                     echo '</a>';
                 }
             }
-            echo '</div>';
             echo $after_widget;
         }
         
@@ -157,7 +164,7 @@ class SubscribeWidget {
         $options = get_option('subscribe_widget');
         
         $aligns = array("left", "center", "right");
-        
+        $link_targets = array(""=>"In the same window", "_blank"=>"In new window", );
         if ( !is_array($options) )
           $options = array('sw-title'=>'',
     		        'sw-postsfeed'=>array(),
@@ -298,6 +305,21 @@ class SubscribeWidget {
         echo '<input id="sw-postsfeed-show" name="sw-postsfeed[show]" type="checkbox" value="1" '.$postfeed_show.' />
         </p>
         <p style="text-align:right">
+            <label for="sw-postsfeed-link_target">' . __('Open link in:') . '</label> 
+            <select id="sw-postsfeed-link_target" name="sw-postsfeed[link_target]" ';
+        if( $link_targets ){
+            foreach( $link_targets as $target=>$name ){
+                if( $sw_postsfeed['link_target'] == $name ){
+                    echo '<option value="'.$target.'" selected>'.$name.'</option>';
+                }
+                else {
+                    echo '<option value="'.$target.'">'.$name.'</option>';
+                }
+            }
+        }
+        echo '  </select>
+        </p>
+        <p style="text-align:right">
             <label for="sw-postsfeed-image">' . __('Posts Feed Image:') . '</label> 
             <select id="sw-postsfeed-image" name="sw-postsfeed[image]"
                 onchange="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
@@ -328,6 +350,21 @@ class SubscribeWidget {
             $commentsfeed_show = ' checked ';
         }
         echo '<input id="sw-commentsfeed-show" name="sw-commentsfeed[show]" type="checkbox" value="1" '.$commentsfeed_show.' />
+        </p>
+        <p style="text-align:right">
+            <label for="sw-commentsfeed-link_target">' . __('Open link in:') . '</label> 
+            <select id="sw-commentsfeed-link_target" name="sw-commentsfeed[link_target]" ';
+        if( $link_targets ){
+            foreach( $link_targets as $target=>$name ){
+                if( $sw_commentsfeed['link_target'] == $name ){
+                    echo '<option value="'.$target.'" selected>'.$name.'</option>';
+                }
+                else {
+                    echo '<option value="'.$target.'">'.$name.'</option>';
+                }
+            }
+        }
+        echo '  </select>
         </p>
         <p style="text-align:right">
             <label for="sw-commentsfeed-image">' . __('Comments Feed Image:') . '</label> 
@@ -362,7 +399,22 @@ class SubscribeWidget {
         echo '<input id="sw-twitter-show" name="sw-twitter[show]" type="checkbox" value="1" '.$twitter_show.' />
         </p>
         <p style="text-align:right">
-            <label for="sw-twitter-acount">' . __('Twitter Acount(Required):') . '</label> 
+            <label for="sw-twitter-link_target">' . __('Open link in:') . '</label> 
+            <select id="sw-twitter-link_target" name="sw-twitter[link_target]" ';
+        if( $link_targets ){
+            foreach( $link_targets as $target=>$name ){
+                if( $sw_twitter['link_target'] == $name ){
+                    echo '<option value="'.$target.'" selected>'.$name.'</option>';
+                }
+                else {
+                    echo '<option value="'.$target.'">'.$name.'</option>';
+                }
+            }
+        }
+        echo '  </select>
+        </p>
+        <p style="text-align:right">
+            <label for="sw-twitter-acount">' . __('Twitter Acount Name(Required):') . '</label> 
             <input id="sw-twitter-acount" name="sw-twitter[acount]" type="text" value="'.$sw_twitter['acount'].'" />
         </p>
         <p style="text-align:right">';
@@ -397,8 +449,24 @@ class SubscribeWidget {
         }
         echo '<input id="sw-feedburner-show" name="sw-feedburner[show]" type="checkbox" value="1" '.$feedburner_show.' />
         </p>
+        </p>
         <p style="text-align:right">
-            <label for="sw-feedburner-acount">' . __('FeedBurner Acount(Required):') . '</label> 
+            <label for="sw-feedburner-link_target">' . __('Open link in:') . '</label> 
+            <select id="sw-feedburner-link_target" name="sw-feedburner[link_target]" ';
+        if( $link_targets ){
+            foreach( $link_targets as $target=>$name ){
+                if( $sw_feedburner['link_target'] == $name ){
+                    echo '<option value="'.$target.'" selected>'.$name.'</option>';
+                }
+                else {
+                    echo '<option value="'.$target.'">'.$name.'</option>';
+                }
+            }
+        }
+        echo '  </select>
+        </p>
+        <p style="text-align:right">
+            <label for="sw-feedburner-acount">' . __('FeedBurner Acount Name(Required):') . '</label> 
             <input id="sw-feedburner-acount" name="sw-feedburner[acount]" type="text" value="'.$sw_feedburner['acount'].'" />
         </p>
         <p style="text-align:right">

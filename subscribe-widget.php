@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.1.3.1
+Version: 1.1.4
 Plugin URI: http://www.pclastnews.com/subscribe-widget.html
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -138,7 +138,7 @@ class SubscribeWidget {
                 if( is_file( $all_images_dir.'twitter.'.$image_ext ) ){
                     if( $sw_twitter['link_target'] != '' ){ $target = ' target="'.$sw_twitter['link_target'].'" '; }
                     else { $target = ""; }
-                    echo '<a title="Follow me on Twitter" '.$target.' href="http://twitter.com/'.$sw_twitter['acount'].'">';
+                    echo '<a title="Follow me on Twitter" '.$target.' href="http://twitter.com/'.($sw_twitter['acount']).'">';
                     echo '<img src="'.$all_images_url.'twitter.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Follow me on Twitter" />';
                     echo '</a>';
                 }
@@ -148,7 +148,7 @@ class SubscribeWidget {
                 if( is_file( $all_images_dir.'feedburner.'.$image_ext ) ){
                     if( $sw_feedburner['link_target'] != '' ){ $target = ' target="'.$sw_feedburner['link_target'].'" '; }
                     else { $target = ""; }
-                    echo '<a title="Subscribe on FeedBurner" '.$target.' rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.$sw_feedburner['acount'].'&loc=en_US">';
+                    echo '<a title="Subscribe on FeedBurner" '.$target.' rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.($sw_feedburner['acount']).'&loc=en_US">';
                     echo '<img src="'.$all_images_url.'feedburner.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe on FeedBurner" />';
                     echo '</a>';
                 }
@@ -185,7 +185,9 @@ class SubscribeWidget {
             
             $options['sw-postsfeed'] = $_POST['sw-postsfeed'];
             $options['sw-commentsfeed'] = $_POST['sw-commentsfeed'];
+            $_POST['sw-twitter']['acount'] = htmlentities($_POST['sw-twitter']['acount']);
             $options['sw-twitter'] = $_POST['sw-twitter'];
+            $_POST['sw-feedburner']['acount'] = htmlentities($_POST['sw-feedburner']['acount']);
             $options['sw-feedburner'] = $_POST['sw-feedburner'];
             $options['sw-align'] = $_POST['sw-align'];
             
@@ -261,7 +263,7 @@ class SubscribeWidget {
             $this->sw_GetFilesFromPath( $feedburnerimages_temp, $feedburnerimages );
         }
         
-        echo '<p style="text-align:right"><label for="sw-title">' . __('Title (Not requered):') . ' <input style="width: 200px" id="sw-title" name="sw-title" type="text" value="'.$title.'" /></label></p>';
+        echo '<p style="text-align:right"><label for="sw-title">' . __('Title (Optional):') . ' <input style="width: 200px" id="sw-title" name="sw-title" type="text" value="'.$title.'" /></label></p>';
         echo '<p style="text-align:right"><label for="sw-align">' . __('Align images:') . ' 
         <select id="sw-align" name="sw-align">';
         foreach( $aligns as $align ){

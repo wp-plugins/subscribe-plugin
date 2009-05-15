@@ -1,23 +1,22 @@
-﻿=== Subscribe Widget ===
+=== Subscribe Widget ===
 Contributors: Kęstas Mindžiulis
 Donate link: http://www.pclastnews.com/subscribe-widget.html
 Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader
 Requires at least: 2.3
 Tested up to: 2.7.1
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 
 Sidebar widget to easy customize and display your subscribers buttons. All settings are available from Sidebar Widget Admin.
 
 
 == Description ==
-Important: Before plugin install make sure that folders can be created by wordpress in your blog directory. Or you can create ityourself. Folders name should be: subscribe-widget; permissions: 0777.
-
-There was some problems with plugin. I have made changes, so now plugin works like it should. If you using 1.0 version, please update it to the 1.0.1 version and reactivate the plugin from admin panel (deactivate and then activate again) and resave widget settings from `Widgets`.
-
+Important: Before plugin install make sure that folders can be created by wordpress in your blog directory (root directory of the blog). Or you can create it yourself. Folders name should be: subscribe-widget; permissions: 0777.
 
 Subscribe-Widget is a free wordpress plugin, which was designed to be used by all bloggers wishing to inform readers about specific information, in a fast and reliable way. This plug-in will create: rss2, comments rss, twitter and feedburner icons on your blog sidebar. These icons will in turn lead readers to your rss, twitter, feedburner and comments rss, accordingly,  readers will tehn be able to find the latest news on your blog. If you want you can disable these icons one by one and only leave those which are needed. To enable the twitter and feedburner icons, one should have acounts on www.twitter.com and www.feedburner.com, as the plugin creates links to these blog accounts. 
 
 Subscribe-Widget has been dessogned to be very practical, as the blog admin allows for one to be able to choose your icons‘ width and height, allows for one to be able to write a title (which will appear above the icons), one will also be able to choose hwo to align the icons (left, center, right), as well as beign able to disable these icons one by one. Should you be struggling to find the right icon, you can also upload one by yourself. Go to: plugins directory /wp-content/plugins/subscribe-widget/images/. New uploaded icons may vary in size, as the Subscribe-Widget plugin will resize the icon to the needed width or height, however images should be no smaller then 50×50 pixels. So, by choosing to use this plug-in, one can choose how to display your icons, as it is all up to you, the blogger.
+
+Now you can use subscribe icons anywhere on the theme. Only thing is, you should use this code : <?php if( function_exists(sw_displayOnTheTheme()) ){ sw_displayOnTheTheme(); } ?> . Put it on the needed theme file, check the checkbox on "Show 'Subscribe Icons' on the theme" and it will show the images on the theme, but will disable images on the widget. In some cases, there should be some styling done on the theme, to show those images correctly; because the themes are different, and styling can't be made for all of them.
 
 Important to note: Images will be resized, firstly by width and then by height. If images width will be smaller then selected, then image will be not resized. The same applies to the image height.
 
@@ -51,5 +50,8 @@ Good news, this plugin is free for everyone! Since it's released under the GPL, 
 Good luck!
 
 P.S. Sorry for my bad english. :)
+
+
+
 
 

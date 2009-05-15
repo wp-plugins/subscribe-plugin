@@ -1,6 +1,11 @@
 ﻿Subscribe widget
 by Kęstas Mindžiulis
 
+V1.1.5 - 07.05.2009
+- Added: Function that could display subscribe icons anywhere on the theme
+- Added: Added option to choose bigger image size.
+- Added: Message if subscribe-widget directory not exists on the root folder.
+
 V1.1.4 - 28.04.2009
 - Bugfix: Corrected spelling
 - Bugfix: Added htmlenties function for twitter and feedburnen acounts, to avoid characters like & and others

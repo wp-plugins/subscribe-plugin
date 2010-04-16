@@ -1,36 +1,17 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 1.1.5
-Plugin URI: http://www.pclastnews.com/subscribe-widget.html
+Version: 2.0.0
+Plugin URI: http://www.itlastnews.com/subscribe-widget-plugin
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
-Author URI: http://www.pclastnews.com
+Author URI: http://www.itlastnews.com
 */
 
 
-if (isset($_GET['activate']) && $_GET['activate'] == 'true') {
-	add_action('init', 'sw_install');
-}
-function sw_install() {
-	if( !is_dir( ABSPATH.'subscribe-widget/' ) ){
-        mkdir( ABSPATH.'subscribe-widget/', 0777 );
-    }
-    else { chmod( ABSPATH.'subscribe-widget/', 0777 ); }
-}
+$sw_admin = new subscribe_widget_admin();
 
-
-/*add_filter('the_content', 'sw_displayOnPosts');
-function sw_displayOnPosts( $content ){
-    global $post;
-    $options = get_option('subscribe_widget');
-    if( ( $post->post_type == 'post' && $options['sw-showonposts'] == '1' ) ) {
-		if (!is_feed()) {
-			return $content.'<p>'.sw_displaySubscribeWidget().'</p>';
-		}
-	}
-	return $content;
-}*/
+register_activation_hook( __FILE__, array( &$sw_admin, 'installPlugin' ) );
 
 function sw_displaySubscribeWidget( $type="post" ){
     $html_content = '';
@@ -170,507 +151,559 @@ function sw_GetFilesFromPath($DIRFILES, &$FileArray, $CURENT_DIR='', $type='F'){
 }
 
 
-class SubscribeWidget {
-
-    // static init callback
-    function init() {
-        // Check for the required plugin functions. This will prevent fatal
-        // errors occurring when you deactivate the dynamic-sidebar plugin.
-        if ( !function_exists('register_sidebar_widget') )
-            return;
-        $widget = new SubscribeWidget();
-        // This registers our widget so it appears with the other available
-        // widgets and can be dragged and dropped into any active sidebars.
-        register_sidebar_widget('Subscribe Widget', array($widget,'displayWidget'));
-        
-        // This registers our optional widget control form.
-        register_widget_control('Subscribe Widget', array($widget,'controlWidget'), 280, 300);
-    }
-
-    
-  // This is the function outputs sidebar
-    function displayWidget($args) {
-    
-        // $args is an array of strings that help widgets to conform to
-        // the active theme: before_widget, before_title, after_widget,
-        // and after_title are the array keys. Default tags: li and h2.
-        extract($args);
-    
-        $options = get_option('subscribe_widget');
-        $title = htmlspecialchars($options['sw-title'], ENT_QUOTES);
-        $sw_postsfeed = $options['sw-postsfeed'];
-        $sw_commentsfeed = $options['sw-commentsfeed'];
-        $sw_twitter = $options['sw-twitter'];
-        $sw_feedburner = $options['sw-feedburner'];
-        
-        $all_images_url = get_option("home").'/subscribe-widget/';
-        $all_images_dir = ABSPATH.'subscribe-widget/';
-        
-        if( !function_exists(gd_info) ){
-            $image_width = " width: ".$options['sw-image-width']."px;";
-        }
-        else { $image_width = ''; }
-        
-        // These lines generate our output.
-        if( ($sw_postsfeed['show'] == 1 || $sw_commentsfeed['show'] == 1 || $sw_twitter['show'] == 1 || $sw_feedburner['show'] == 1) && ($options['sw-showontheme'] != 1 ) ){
-            echo $before_widget;
-            if( $title != '' ){
-                echo $before_title . $title . $after_title;
-            }
-            echo '<div id="subscribe-widget-div">';
-            if( $sw_postsfeed['show'] == 1  ){
-                $image_ext = sw_getExtension( $sw_postsfeed['image'] );
-                if( is_file( $all_images_dir.'postsfeed.'.$image_ext ) ){
-                    if( $sw_postsfeed['link_target'] != '' ){ $target = ' target="'.$sw_postsfeed['link_target'].'" '; }
-                    else { $target = ""; }
-                    echo '<a title="Subscribe RSS" '.$target.' href="'.get_feed_link().'">';
-                    echo '<img src="'.$all_images_url.'postsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe RSS" />';
-                    echo '</a>';
-                }
-            }
-            if( $sw_commentsfeed['show'] == 1 ){
-                $image_ext = sw_getExtension( $sw_commentsfeed['image'] );
-                if( is_file( $all_images_dir.'commentsfeed.'.$image_ext ) ){
-                    if( $sw_commentsfeed['link_target'] != '' ){ $target = ' target="'.$sw_commentsfeed['link_target'].'" '; }
-                    else { $target = ""; }
-                    echo '<a title="Subscribe comments RSS" '.$target.' href="'.get_feed_link('comments_').'">';
-                    echo '<img src="'.$all_images_url.'commentsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;'.$image_width.'" alt="Subscribe comments RSS" />';
-                    echo '</a>';
-                }
-            }
-            if( $sw_twitter['show'] == 1 && $sw_twitter['acount'] != '' ){
-                $image_ext = sw_getExtension( $sw_twitter['image'] );
-                if( is_file( $all_images_dir.'twitter.'.$image_ext ) ){
-                    if( $sw_twitter['link_target'] != '' ){ $target = ' target="'.$sw_twitter['link_target'].'" '; }
-                    else { $target = ""; }
-                    echo '<a title="Follow me on Twitter" '.$target.' href="http://twitter.com/'.($sw_twitter['acount']).'">';
-                    echo '<img src="'.$all_images_url.'twitter.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Follow me on Twitter" />';
-                    echo '</a>';
-                }
-            }
-            if( $sw_feedburner['show'] == 1 && $sw_feedburner['acount'] != '' ){
-                $image_ext = sw_getExtension( $sw_feedburner['image'] );
-                if( is_file( $all_images_dir.'feedburner.'.$image_ext ) ){
-                    if( $sw_feedburner['link_target'] != '' ){ $target = ' target="'.$sw_feedburner['link_target'].'" '; }
-                    else { $target = ""; }
-                    echo '<a title="Subscribe on FeedBurner" '.$target.' rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.($sw_feedburner['acount']).'&amp;loc=en_US">';
-                    echo '<img src="'.$all_images_url.'feedburner.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe on FeedBurner" />';
-                    echo '</a>';
-                }
-            }
-            echo '</div>';
-            echo $after_widget;
-        }
-        
-    }
-
-  // This is the function that outputs the control form
-    function controlWidget() {
-        // Get our options and see if we're handling a form submission.
-        $options = get_option('subscribe_widget');
-        
-        $aligns = array("left", "center", "right");
-        $link_targets = array(""=>"In the same window", "_blank"=>"In new window", );
-        if ( !is_array($options) )
-          $options = array('sw-title'=>'',
-    		        'sw-postsfeed'=>array(),
-                    'sw-commentsfeed'=>array(),
-                    'sw-twitter'=>array(),
-                    'sw-feedburner'=>array(),
-                    'sw-image-height'=>'',
-                    'sw-image-width'=>'',
-                    'sw-align'=>'',
-                    'sw-showonposts'=>'',
-                     );
-    
-        if ( $_POST['sw-submit'] ) {
-            // Remember to sanitize and format use input appropriately.
-            $options['sw-title'] = strip_tags(stripslashes($_POST['sw-title']));
-            $options['sw-image-height'] = strip_tags(stripslashes($_POST['sw-image-height']));
-            $options['sw-image-width'] = strip_tags(stripslashes($_POST['sw-image-width']));
-            
-            $options['sw-postsfeed'] = $_POST['sw-postsfeed'];
-            $options['sw-commentsfeed'] = $_POST['sw-commentsfeed'];
-            $_POST['sw-twitter']['acount'] = htmlentities($_POST['sw-twitter']['acount']);
-            $options['sw-twitter'] = $_POST['sw-twitter'];
-            $_POST['sw-feedburner']['acount'] = htmlentities($_POST['sw-feedburner']['acount']);
-            $options['sw-feedburner'] = $_POST['sw-feedburner'];
-            $options['sw-align'] = $_POST['sw-align'];
-            $options['sw-showontheme'] = $_POST['sw-showontheme'];
-            //$options['sw-showonposts'] = $_POST['sw-showonposts'];
-            
-            $resize = new ResizeComponent();
-            $all_images_dir = ABSPATH.'wp-content/plugins/subscribe-plugin/images/';
-            if( !is_dir( ABSPATH.'subscribe-widget/' ) ){
-                mkdir( ABSPATH.'subscribe-widget/', 0777 );
-            }
-            else { chmod( ABSPATH.'subscribe-widget/', 0777 ); }
-            if( is_dir( ABSPATH.'subscribe-widget/' ) ){
-                if( is_file( $all_images_dir.'posts-feed/'.$_POST['sw-postsfeed']['image'] ) ){
-                    $image_ext = sw_getExtension( $_POST['sw-postsfeed']['image'] );
-                    copy( $all_images_dir.'posts-feed/'.$_POST['sw-postsfeed']['image'], ABSPATH.'subscribe-widget/postsfeed.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widget/postsfeed.'.$image_ext;
-                    sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
-                }
-                
-                if( is_file( $all_images_dir.'comments-feed/'.$_POST['sw-commentsfeed']['image'] ) ){
-                    $image_ext = sw_getExtension( $_POST['sw-commentsfeed']['image'] );
-                    copy( $all_images_dir.'comments-feed/'.$_POST['sw-commentsfeed']['image'], ABSPATH.'subscribe-widget/commentsfeed.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widget/commentsfeed.'.$image_ext;
-                    sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
-                }
-                if( is_file( $all_images_dir.'twitter/'.$_POST['sw-twitter']['image'] ) ){
-                    $image_ext = sw_getExtension( $_POST['sw-twitter']['image'] );
-                    copy( $all_images_dir.'twitter/'.$_POST['sw-twitter']['image'], ABSPATH.'subscribe-widget/twitter.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widget/twitter.'.$image_ext;
-                    sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
-                }
-                
-                if( is_file( $all_images_dir.'feedburner/'.$_POST['sw-feedburner']['image'] ) ){
-                    $image_ext = sw_getExtension( $_POST['sw-feedburner']['image'] );
-                    copy( $all_images_dir.'feedburner/'.$_POST['sw-feedburner']['image'], ABSPATH.'subscribe-widget/feedburner.'.$image_ext ) ;
-                    $image = ABSPATH.'subscribe-widget/feedburner.'.$image_ext;
-                    sw_resizeImage( $resize, $image, $_POST['sw-image-height'], $_POST['sw-image-width'] );
-                }
-                chmod( ABSPATH.'subscribe-widget/', 0755 );
-            }
-            update_option('subscribe_widget', $options);
-        }
-
-        $title = htmlspecialchars($options['sw-title'], ENT_QUOTES);
-        $sw_postsfeed = $options['sw-postsfeed'];
-        $sw_commentsfeed = $options['sw-commentsfeed'];
-        $sw_twitter = $options['sw-twitter'];
-        $sw_feedburner = $options['sw-feedburner'];
-        $image_height = $options['sw-image-height'];
-        $image_width = $options['sw-image-width'];
-        $images_align = $options['sw-align'];
-        $showonpostspage = $options['sw-showonposts'];
-        $showontheme = $options['sw-showontheme'];
-                
-        $feedimages_temp = array();
-        $feedimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/posts-feed/' ) ){
-            sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/posts-feed/', $feedimages_temp );
-            sw_GetFilesFromPath( $feedimages_temp, $feedimages );
-        }
-        $commentsfeedimages_temp = array();
-        $commentsfeedimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/comments-feed/' ) ){
-            sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/comments-feed/', $commentsfeedimages_temp );
-            sw_GetFilesFromPath( $commentsfeedimages_temp, $commentsfeedimages );
-        }
-        $twitterimages_temp = array();
-        $twitterimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/twitter/' ) ){
-            sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/twitter/', $twitterimages_temp );
-            sw_GetFilesFromPath( $twitterimages_temp, $twitterimages );
-        }
-        $feedburnerimages_temp = array();
-        $feedburnerimages = array();
-        if( is_dir( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/feedburner/' ) ){
-            sw_ReadDirectory( ABSPATH . 'wp-content/plugins/subscribe-plugin/images/feedburner/', $feedburnerimages_temp );
-            sw_GetFilesFromPath( $feedburnerimages_temp, $feedburnerimages );
-        }
-        
-        if( is_dir(ABSPATH . 'subscribe-widget') ){
-            echo '<p style="text-align:right"><label for="sw-title">' . __('Title (Optional):') . ' <input style="width: 200px" id="sw-title" name="sw-title" type="text" value="'.$title.'" /></label></p>';
-            //echo '<p style="text-align:right"><label for="sw-showonposts">' . __('Show "Subscribe Icons" on the bottom of the post page:') . ' <input id="sw-showonposts" name="sw-showonposts" type="checkbox" value="1"';
-            //if( $showonpostspage == 1 ){ echo "checked"; }
-            //echo ' /></label></p>';
-            
-            echo '<p style="text-align:right"><label for="sw-showontheme">' . __('Show "Subscribe Icons" on the theme*:') . ' <input id="sw-showontheme" name="sw-showontheme" type="checkbox" value="1"';
-            if( $showontheme == 1 ){ echo "checked"; }
-            echo ' /></label><small>* icons will be shown only on theme, where php code was inserted. For more details look at the readme file in subscribe-plugin folder</small></p>';
-            
-            echo '<p style="text-align:right"><label for="sw-align">' . __('Align images:') . ' 
-            <select id="sw-align" name="sw-align">';
-            foreach( $aligns as $align ){
-                if( $align == $images_align ){
-                    echo '<option value="'.$align.'" selected>'.$align.'</option>';
-                }
-                else {
-                    echo '<option value="'.$align.'">'.$align.'</option>';
-                }
-            }
-            echo '
-            </select>
-            </label></p>';
-            echo '<p style="text-align:right"><label for="sw-image-height">' . __('Images height *:') . ' 
-            <select id="sw-image-height" name="sw-image-height">';
-            for( $i=20; $i<101; $i=$i+5 ){
-                if( $image_height == $i ){ echo '<option value="'.$i.'" selected>'.$i.'</option>'; } 
-                else { echo '<option value="'.$i.'">'.$i.'</option>'; }
-            }
-            echo '    
-            </select>
-            </label></p>';
-            echo '<p style="text-align:right"><label for="sw-image-width">' . __('Images width *:') . ' 
-            <select id="sw-image-width" name="sw-image-width">';
-            for( $i=20; $i<101; $i=$i+5 ){
-                if( $image_width == $i ){ echo '<option value="'.$i.'" selected>'.$i.'</option>'; } 
-                else { echo '<option value="'.$i.'">'.$i.'</option>'; }
-            }
-            echo '    
-            </select>
-            </label>
-            <br />
-            <small>* Image will be resized firstly by width and then by height. If image width will be smaller then selected, then image will be not resized. The same is with image height.</small>
-            </p>';
-            
-            echo '<h3>Widget Content:</h3>
-            <fieldset style="border: 1px solid #000000; margin: 3px; padding:5px;"><legend style="font-weight: bold; font-size: 12px;">Posts Feed</legend>
-            <p style="text-align:right">
-                <label for="sw-postsfeed-show">' . __('Show Posts Feed:') . '</label>';
-            if( $sw_postsfeed['show'] == 1 ){
-                $postfeed_show = ' checked ';
-            }
-            echo '<input id="sw-postsfeed-show" name="sw-postsfeed[show]" type="checkbox" value="1" '.$postfeed_show.' />
-            </p>
-            <p style="text-align:right">
-                <label for="sw-postsfeed-link_target">' . __('Open link in:') . '</label> 
-                <select id="sw-postsfeed-link_target" name="sw-postsfeed[link_target]" ';
-            if( $link_targets ){
-                foreach( $link_targets as $target=>$name ){
-                    if( $sw_postsfeed['link_target'] == $name ){
-                        echo '<option value="'.$target.'" selected>'.$name.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$target.'">'.$name.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <label for="sw-postsfeed-image">' . __('Posts Feed Image:') . '</label> 
-                <select id="sw-postsfeed-image" name="sw-postsfeed[image]"
-                    onchange="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
-                    onkeydown="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;"
-                    onkeyup="document.getElementById(\'postsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/\'+document.getElementById(\'sw-postsfeed-image\').options[selectedIndex].value;" >
-                    <option value="">-</option>';
-            if( $feedimages ){
-                foreach( $feedimages as $image ){
-                    if( $sw_postsfeed['image'] == $image ){
-                        echo '<option value="'.$image.'" selected>'.$image.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$image.'">'.$image.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <img id="postsfeed-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/posts-feed/'.$sw_postsfeed['image'].'" style="height:50px; border: 1px solid #000000;" />
-            </p>
-            </fieldset>
-            
-            <fieldset style="border: 1px solid #000000; margin: 3px; padding:5px;"><legend style="font-weight: bold; font-size: 12px;">Comments Feed</legend>
-            <p style="text-align:right">
-                <label for="sw-commentsfeed-show">' . __('Show Comments Feed:') . '</label>';
-            if( $sw_commentsfeed['show'] == 1 ){
-                $commentsfeed_show = ' checked ';
-            }
-            echo '<input id="sw-commentsfeed-show" name="sw-commentsfeed[show]" type="checkbox" value="1" '.$commentsfeed_show.' />
-            </p>
-            <p style="text-align:right">
-                <label for="sw-commentsfeed-link_target">' . __('Open link in:') . '</label> 
-                <select id="sw-commentsfeed-link_target" name="sw-commentsfeed[link_target]" ';
-            if( $link_targets ){
-                foreach( $link_targets as $target=>$name ){
-                    if( $sw_commentsfeed['link_target'] == $name ){
-                        echo '<option value="'.$target.'" selected>'.$name.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$target.'">'.$name.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <label for="sw-commentsfeed-image">' . __('Comments Feed Image:') . '</label> 
-                <select id="sw-commentsfeed-image" name="sw-commentsfeed[image]"
-                    onchange="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;"
-                    onkeydown="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;"
-                    onkeyup="document.getElementById(\'commentsfeed-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/\'+document.getElementById(\'sw-commentsfeed-image\').options[selectedIndex].value;" >
-                    <option value="">-</option>';
-            if( $commentsfeedimages ){
-                foreach( $commentsfeedimages as $image ){
-                    if( $sw_commentsfeed['image'] == $image ){
-                        echo '<option value="'.$image.'" selected>'.$image.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$image.'">'.$image.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <img id="commentsfeed-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/comments-feed/'.$sw_commentsfeed['image'].'" style="height:50px; border: 1px solid #000000;" />
-            </p>
-            </fieldset>
-        
-            <fieldset style="border: 1px solid #000000; margin: 3px; padding:5px;"><legend style="font-weight: bold; font-size: 12px;">Twitter</legend>
-            <p style="text-align:right">
-                <label for="sw-twitter-show">' . __('Show Twitter:') . '</label>';
-            if( $sw_twitter['show'] == 1 ){
-                $twitter_show = ' checked ';
-            }
-            echo '<input id="sw-twitter-show" name="sw-twitter[show]" type="checkbox" value="1" '.$twitter_show.' />
-            </p>
-            <p style="text-align:right">
-                <label for="sw-twitter-link_target">' . __('Open link in:') . '</label> 
-                <select id="sw-twitter-link_target" name="sw-twitter[link_target]" ';
-            if( $link_targets ){
-                foreach( $link_targets as $target=>$name ){
-                    if( $sw_twitter['link_target'] == $name ){
-                        echo '<option value="'.$target.'" selected>'.$name.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$target.'">'.$name.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <label for="sw-twitter-acount">' . __('Twitter Acount Name(Required):') . '</label> 
-                <input id="sw-twitter-acount" name="sw-twitter[acount]" type="text" value="'.$sw_twitter['acount'].'" />
-            </p>
-            <p style="text-align:right">';
-            echo '<label for="sw-twitter-image">' . __('Twitter Image:') . '</label> 
-                <select id="sw-twitter-image" name="sw-twitter[image]" style="width: 100px;" 
-                onchange="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;"
-                onkeydown="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;"
-                onkeyup="document.getElementById(\'twitter-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/\'+document.getElementById(\'sw-twitter-image\').options[selectedIndex].value;" >
-                    <option value="">-</option>';
-            if( $twitterimages ){
-                foreach( $twitterimages as $image ){
-                    if( $sw_twitter['image'] == $image ){
-                        echo '<option value="'.$image.'" selected>'.$image.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$image.'">'.$image.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <img id="twitter-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/twitter/'.$sw_twitter['image'].'" style="height:50px; border: 1px solid #000000;" />
-            </p>
-            </fieldset>
-            
-            <fieldset style="border: 1px solid #000000; margin: 3px; padding:5px;"><legend style="font-weight: bold; font-size: 12px;">FeedBurner</legend>
-            <p style="text-align:right">
-                <label for="sw-feedburner-show">' . __('Show FeedBurner:') . '</label>';
-            if( $sw_feedburner['show'] == 1 ){
-                $feedburner_show = ' checked ';
-            }
-            echo '<input id="sw-feedburner-show" name="sw-feedburner[show]" type="checkbox" value="1" '.$feedburner_show.' />
-            </p>
-            </p>
-            <p style="text-align:right">
-                <label for="sw-feedburner-link_target">' . __('Open link in:') . '</label> 
-                <select id="sw-feedburner-link_target" name="sw-feedburner[link_target]" ';
-            if( $link_targets ){
-                foreach( $link_targets as $target=>$name ){
-                    if( $sw_feedburner['link_target'] == $name ){
-                        echo '<option value="'.$target.'" selected>'.$name.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$target.'">'.$name.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <label for="sw-feedburner-acount">' . __('FeedBurner Acount Name(Required):') . '</label> 
-                <input id="sw-feedburner-acount" name="sw-feedburner[acount]" type="text" value="'.$sw_feedburner['acount'].'" />
-            </p>
-            <p style="text-align:right">
-                <label for="sw-feedburner-image">' . __('FeedBurner Image:') . '</label> 
-                <select id="sw-feedburner-image" name="sw-feedburner[image]"
-                    onchange="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;"
-                    onkeydown="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;"
-                    onkeyup="document.getElementById(\'feedburner-image\').src=\''.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/\'+document.getElementById(\'sw-feedburner-image\').options[selectedIndex].value;" >
-                    <option value="">-</option>';
-            if( $feedburnerimages ){
-                foreach( $feedburnerimages as $image ){
-                    if( $sw_feedburner['image'] == $image ){
-                        echo '<option value="'.$image.'" selected>'.$image.'</option>';
-                    }
-                    else {
-                        echo '<option value="'.$image.'">'.$image.'</option>';
-                    }
-                }
-            }
-            echo '  </select>
-            </p>
-            <p style="text-align:right">
-                <img id="feedburner-image" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/feedburner/'.$sw_feedburner['image'].'" style="height:50px; border: 1px solid #000000;" />
-            </p>
-            </fieldset>
-            <p>If you have any suggestions about this plugin or it not works like it should, write to <a href="mailto:kestas.mindziulis@gmail.com">me</a></p>
-            ';
-    
-            echo '<input type="hidden" id="sw-submit" name="sw-submit" value="1" />';
-        }
-        else {
-            echo '<p>';
-            echo 'Plugin couldn\'t create directory on the server.  Please add to this folder `'.ABSPATH.'` permissions 0777 and reinstall plugin, or create inside this folder directory "subscribe-widget" and add permissions 0777. This is important for the plugin. When folder will be created you can change back permissions on the root folder ';
-        }
-    }
-}
-/* Functions resize image by width and height. */
-function sw_resizeImage( $resize, $image, $image_height, $image_width ){
-    if( is_file( $image ) && function_exists(gd_info) ){
-        list( $width, $height ) = getimagesize( $image );
-        if($width > $image_width){
-            $thumb= $resize->Resize($image );
-            $resize->size_width($image_width);    
-            $resize->save( $image );       
-        }
-        list( $width, $height ) = getimagesize( $image );
-        if($height > $image_height ){
-            $thumb= $resize->Resize( $image ); 
-            $resize->size_height( $image_height );   
-            $resize->save( $image );       
-        }
-    }
-}
-/* Functions gets files extension from files name */
-function sw_getExtension( $fileName ){
-    $extension = array_reverse(explode( ".", $fileName));
-    $extension = $extension[0];
-    return $extension;
-}
-
 add_action("wp_head","sw_wpHead");
 function sw_wpHead(){
     $head = '';
     $options = get_option('subscribe_widget');
-    if( isset( $options['sw-align'] ) ){
-        if( !empty( $options['sw-align'] ) ){
+    if( isset( $options['sw_align'] ) && !is_admin() ){
+        if( !empty( $options['sw_align'] ) ){
             $head .= '<style type="text/css" >';
-            $head .= '#subscribe-widget-div { text-align: '.$options['sw-align'].'; }';
+            $head .= '#subscribe-widget-div { text-align: '.$options['sw_align'].'; margin-top:5px; }';
             $head .= '</style>';
         }
     }
+    elseif( is_admin() ) {
+        $head .= '<style type="text/css" >';
+        $head .= '#sw-element-box { border: 1px solid #999999; }';
+        $head .= '</style>';
+        
+	}
     echo $head;
 }
 
+
+add_action("admin_head","sw_adminHead");
+function sw_adminHead(){
+    $head = '';
+    ?>
+    <style type="text/css" >
+    .sw-element-box { border: 1px solid #999999; padding:3px; margin-bottom:6px; }
+    </style>
+    
+    <script type="text/javascript">
+    
+
+	jQuery(document).ready(function() {
+		jQuery(".sw-element-box").css({display: "none"}); // Opera Fix
+		
+	});
+	
+	function sw_expand( clicker, box ){
+		jQuery( clicker ).parent().html( '<a href="#" class="show-element-box" onclick="sw_shrink( this, \''+box+'\' ); return false;">[-]</a>' );
+		jQuery( box ).css({display: "block"});
+	}
+	function sw_shrink( clicker, box ){
+		jQuery( clicker ).parent().html( '<a href="#" class="show-element-box" onclick="sw_expand( this, \''+box+'\' ); return false;">[+]</a>' );
+		jQuery( box ).css({display: "none"});
+	}
+	
+	
+	function sw_changeImg( clicker, box, img_path ){
+		var image = '';
+		image = jQuery( clicker ).val();
+		img_src = '<?php echo get_option( 'siteurl' ); ?>/wp-content/plugins/subscribe-plugin/images/'+img_path+'/'+image;
+		jQuery( box ).attr( "src", img_src );
+	}
+	
+    </script>
+    <?php
+}
+
+function sw_loadSubscribeWidget() {
+  register_widget('sw_SubscribeWidget');
+}
+add_action('widgets_init', 'sw_loadSubscribeWidget');
+
+class sw_SubscribeWidget extends WP_Widget {
+	var $sw_admin;
+	function sw_SubscribeWidget() {
+		$this->sw_admin = new subscribe_widget_admin();
+		
+		$options = get_option('subscribe_widget');
+		/* assign older values to new structure */
+		if( count( $options ) > 0 ){ 
+			if( isset( $options['sw-title'] ) ){ $options['sw_title'] = $options['sw-title']; }
+            if( isset( $options['sw-image-height'] ) ){ $options['sw_image_height'] = $options['sw-image-height']; }
+            if( isset( $options['sw-image-width'] ) ){ $options['sw_image_width'] = $options['sw-image-width']; }
+            if( isset( $options['sw-postsfeed'] ) ){ $options['sw_postsfeed'] = $options['sw-postsfeed']; }
+            if( isset( $options['sw-commentsfeed'] ) ){ $options['sw_commentsfeed'] = $options['sw-commentsfeed']; }
+            if( isset( $options['sw-twitter'] ) ){ $options['sw_twitter'] = $options['sw-twitter']; }
+            if( isset( $options['sw-feedburner'] ) ){ $options['sw_feedburner'] = $options['sw-feedburner']; }
+            if( isset( $options['sw-align'] ) ){ $options['sw_align'] = $options['sw-align']; }
+            if( isset( $options['sw-showontheme'] ) ){ $options['sw_showontheme'] = $options['sw-showontheme']; }
+		}
+		
+		// widget actual processes
+		$widget_ops = array( 'classname' => '', 
+		                     'description' => __('Shows subscribe icons on a sidebar.', 'sw_subscribe_widget') );
+		$this->WP_Widget('sw-subscribe-widget', __('Subscribe Widget', 'sw_subscribe_widget'), $widget_ops );
+	}
+
+	function form($instance) {
+		$widgetOptions = (object)array();
+		$widget_content = '';
+		
+		if( isset( $_POST['sw_submit'] ) && $_POST['sw_submit'] == 1 ){
+			/*echo '<pre>';
+			print_r( $_POST );
+			echo '</pre>'; */
+			$options = array();
+			$options['sw_title'] = strip_tags(stripslashes($_POST['sw_title']));
+            $options['sw_image_height'] = strip_tags(stripslashes($_POST['sw_image_height']));
+            $options['sw_image_width'] = strip_tags(stripslashes($_POST['sw_image_width']));
+            $options['sw_align'] = $_POST['sw_align'];
+            $options['sw_showontheme'] = $_POST['sw_showontheme'];
+            
+            $options['sw_postsfeed'] = $_POST['sw_postsfeed'];
+            $options['sw_commentsfeed'] = $_POST['sw_commentsfeed'];
+            $_POST['sw_twitter']['acount'] = htmlentities($_POST['sw_twitter']['acount']);
+            $options['sw_twitter'] = $_POST['sw_twitter'];
+            $_POST['sw_feedburner']['acount'] = htmlentities($_POST['sw_feedburner']['acount']);
+            $options['sw_feedburner'] = $_POST['sw_feedburner'];
+            
+            $_POST['sw_facebook']['acount'] = htmlentities($_POST['sw_facebook']['acount']);
+            $options['sw_facebook'] = $_POST['sw_facebook'];
+            
+            $resize = new sw_ResizeComponent();
+            $all_images_dir = ABSPATH.'wp-content/plugins/subscribe-plugin/images/';
+            if( !is_dir( ABSPATH.'subscribe-widget/' ) ){
+                mkdir( ABSPATH.'subscribe-widget/', 0777 );
+            }
+            else { @chmod( ABSPATH.'subscribe-widget/', 0777 ); }
+            if( is_dir( ABSPATH.'subscribe-widget/' ) ){
+                if( is_file( $all_images_dir.'posts-feed/'.$_POST['sw_postsfeed']['image'] ) ){
+					$this->sw_admin->resizeElementImage( $all_images_dir.'posts-feed/', 'postsfeed', $_POST['sw_postsfeed'], $options['sw_image_height'], $options['sw_image_width'] );
+                }
+                if( is_file( $all_images_dir.'comments-feed/'.$_POST['sw_commentsfeed']['image'] ) ){
+                	$this->sw_admin->resizeElementImage( $all_images_dir.'comments-feed/', 'commentsfeed', $_POST['sw_commentsfeed'], $options['sw_image_height'], $options['sw_image_width'] );
+                }
+                if( is_file( $all_images_dir.'twitter/'.$_POST['sw_twitter']['image'] ) ){
+					$this->sw_admin->resizeElementImage( $all_images_dir.'twitter/', 'twitter', $_POST['sw_twitter'], $options['sw_image_height'], $options['sw_image_width'] );
+                }
+                if( is_file( $all_images_dir.'feedburner/'.$_POST['sw_feedburner']['image'] ) ){
+                    $this->sw_admin->resizeElementImage( $all_images_dir.'feedburner/', 'feedburner', $_POST['sw_feedburner'], $options['sw_image_height'], $options['sw_image_width'] );
+                }
+                if( is_file( $all_images_dir.'facebook/'.$_POST['sw_facebook']['image'] ) ){
+                    $this->sw_admin->resizeElementImage( $all_images_dir.'facebook/', 'facebook', $_POST['sw_facebook'], $options['sw_image_height'], $options['sw_image_width'] );
+                }
+                @chmod( ABSPATH.'subscribe-widget/', 0755 );
+            }
+            update_option('subscribe_widget', $options);
+		}
+		
+		$options = get_option('subscribe_widget');
+		if ( !is_array( $options ) ) {
+			$options = array(
+								'sw_title'=>'',
+						        'sw_postsfeed'=>array(),
+						        'sw_commentsfeed'=>array(),
+						        'sw_twitter'=>array(),
+						        'sw_feedburner'=>array(),
+						        'sw_facebook'=>array(),
+						        'sw_image_height'=>'',
+						        'sw_image_width'=>'',
+						        'sw_align'=>'',
+						        'sw_showonposts'=>'',
+						         );
+		}
+		$widgetOptions = $this->sw_admin->array2Object( $options );
+		//print_r( $widgetOptions );
+		if( $widgetOptions->sw_title != '' ){
+			$widgetOptions->sw_title = htmlspecialchars( $widgetOptions->sw_title , ENT_QUOTES);
+		}
+		
+		if( is_dir( $this->sw_admin->img_dir ) ){
+			$widget_content = $this->sw_admin->getStandartOptions( $widgetOptions );
+			$widget_content .= '<script type="text/javascript">	
+				jQuery(".sw-element-box").css({display: "none"});	
+			</script>';
+			$widget_content .= '<h3>Widget Content:</h3>';
+			
+			/* posts feed settings */
+			$elementTexts = array(
+				  					'show_element'=>'Show Posts Feed: ',
+				  					'open_link_in'=>'Open link in: ',
+				  					'element_image'=>'Posts Feed Image: ',
+									);
+			$elementTexts = $this->sw_admin->array2Object( $elementTexts );
+			$elementOptions = $this->sw_admin->array2Object( $widgetOptions->sw_postsfeed );
+			$feedimages = $this->sw_admin->getElementImages( 'posts-feed' );
+			$widget_content .= '<h4 style="margin-bottom:0px; margin-top: 3px;">
+									Posts Feed
+									<span> 
+									<a href="#" class="show-element-box" onclick="sw_expand( this, \'.sw_postsfeed\' ); return false;">[+]</a>
+									</span>
+								</h4>';
+			$widget_content .= $this->sw_admin->getSubscribeElementOptions( $elementOptions, $elementTexts, $feedimages, 'sw_postsfeed', 'posts-feed' );
+			
+			/* comments feed settings */
+			$elementTexts = array(
+				  					'show_element'=>'Show Comments Feed: ',
+				  					'open_link_in'=>'Open link in: ',
+				  					'element_image'=>'Comments Feed Image: ',
+									);
+			$elementTexts = $this->sw_admin->array2Object( $elementTexts );
+			$elementOptions = $this->sw_admin->array2Object( $widgetOptions->sw_commentsfeed );
+			$feedimages = $this->sw_admin->getElementImages( 'comments-feed' );
+			$widget_content .= '<h4 style="margin-bottom:0px; margin-top: 3px;">
+									Comments Feed
+									<span> 
+									<a href="#" class="show-element-box" onclick="sw_expand( this, \'.sw_commentsfeed\' ); return false;">[+]</a>
+									</span>
+								</h4>';
+			$widget_content .= $this->sw_admin->getSubscribeElementOptions( $elementOptions, $elementTexts, $feedimages, 'sw_commentsfeed', 'comments-feed' );
+			
+			/* Twitter settings */
+			$elementTexts = array(
+				  					'show_element'=>'Show Twitter: ',
+				  					'open_link_in'=>'Open link in: ',
+				  					'acount_name'=>'Twitter Acount Name(Required): ',
+				  					'element_image'=>'Twitter Image: ',
+									);
+			$elementTexts = $this->sw_admin->array2Object( $elementTexts );
+			$elementOptions = $this->sw_admin->array2Object( $widgetOptions->sw_twitter );
+			$feedimages = $this->sw_admin->getElementImages( 'twitter' );
+			$widget_content .= '<h4 style="margin-bottom:0px; margin-top: 3px;">
+									Twitter
+									<span> 
+									<a href="#" class="show-element-box" onclick="sw_expand( this, \'.sw_twitter\' ); return false;">[+]</a>
+									</span>
+								</h4>';
+			$widget_content .= $this->sw_admin->getSubscribeElementOptions( $elementOptions, $elementTexts, $feedimages, 'sw_twitter', 'twitter' );
+			
+			/* FeedBurner settings */
+			$elementTexts = array(
+				  					'show_element'=>'Show FeedBurner: ',
+				  					'open_link_in'=>'Open link in: ',
+				  					'acount_name'=>'FeedBurner Acount Name(Required): ',
+				  					'element_image'=>'FeedBurner Image: ',
+									);
+			$elementTexts = $this->sw_admin->array2Object( $elementTexts );
+			$elementOptions = $this->sw_admin->array2Object( $widgetOptions->sw_feedburner );
+			$feedimages = $this->sw_admin->getElementImages( 'feedburner' );
+			$widget_content .= '<h4 style="margin-bottom:0px; margin-top: 3px;">
+									FeedBurner
+									<span> 
+									<a href="#" class="show-element-box" onclick="sw_expand( this, \'.sw_feedburner\' ); return false;">[+]</a>
+									</span>
+								</h4>';
+			$widget_content .= $this->sw_admin->getSubscribeElementOptions( $elementOptions, $elementTexts, $feedimages, 'sw_feedburner', 'feedburner' );
+			
+			/* FeedBurner settings */
+			$elementTexts = array(
+				  					'show_element'=>'Show Facebook: ',
+				  					'open_link_in'=>'Open link in: ',
+				  					'acount_name'=>'Facebook profile link: ',
+				  					'element_image'=>'Facebook Image: ',
+									);
+			$elementTexts = $this->sw_admin->array2Object( $elementTexts );
+			$elementOptions = $this->sw_admin->array2Object( $widgetOptions->sw_facebook );
+			$feedimages = $this->sw_admin->getElementImages( 'facebook' );
+			$widget_content .= '<h4 style="margin-bottom:0px; margin-top: 3px;">
+									Facebook
+									<span> 
+									<a href="#" class="show-element-box" onclick="sw_expand( this, \'.sw_facebook\' ); return false;">[+]</a>
+									</span>
+								</h4>';
+			$widget_content .= $this->sw_admin->getSubscribeElementOptions( $elementOptions, $elementTexts, $feedimages, 'sw_facebook', 'facebook' );
+			
+			$widget_content .= $this->sw_admin->getWidgetFormFooter();
+		}
+		else {
+            $widget_content .= '<p>';
+            $widget_content .= 'Plugin couldn\'t create directory on the server.  Please add to this folder `'.ABSPATH.'` permissions 0777 and reinstall plugin, or create inside this folder directory "subscribe-widget" and add permissions 0777. This is important for the plugin. When folder will be created you can change back permissions on the root folder ';
+        }
+        echo $widget_content;
+	}
+
+	function update($new_instance, $old_instance) {
+		// processes widget options to be saved
+	}
+
+	function widget($args, $instance) {
+		global $wpdb, $table_prefix, $post;
+		
+		extract($args);
+    
+        $options = get_option('subscribe_widget');
+        $widgetOptions = $this->sw_admin->array2Object( $options );
+        $title = htmlspecialchars($widgetOptions->sw_title, ENT_QUOTES);
+        
+        $img_web_path = get_option("home").'/subscribe-widget/';
+        $img_dir = ABSPATH.'subscribe-widget/';
+        
+        if( !function_exists(gd_info) ){
+            $image_width = " width: ".$widgetOptions->sw_image_width."px;";
+        }
+        else { $image_width = ''; }
+        
+        $sw_postsfeed = $this->sw_admin->array2Object( $widgetOptions->sw_postsfeed );
+        $sw_commentsfeed = $this->sw_admin->array2Object( $widgetOptions->sw_commentsfeed );
+        $sw_twitter = $this->sw_admin->array2Object( $widgetOptions->sw_twitter );
+        $sw_feedburner = $this->sw_admin->array2Object( $widgetOptions->sw_feedburner );
+        $sw_facebook = $this->sw_admin->array2Object( $widgetOptions->sw_facebook );
+        // These lines generate our output.
+		if( ($sw_postsfeed->show == 1 || $sw_commentsfeed->show == 1 || $sw_twitter->show == 1 || $sw_feedburner->show == 1) && ($widgetOptions->sw-showontheme != 1 ) ){
+            echo $before_widget;
+			
+			if( $title != '' ){
+                echo $before_title . $title . $after_title;
+            }
+            echo '<div id="subscribe-widget-div">';
+            if( $sw_postsfeed->show == 1  ){
+                $strings = array(
+								'title'=>'Subscribe RSS',
+								'link'=>get_feed_link(), 
+								);
+				echo $this->sw_admin->getSubscribeElementForView( $sw_postsfeed, 'postsfeed', $img_dir, $img_web_path, $strings );
+            }
+            if( $sw_commentsfeed->show == 1 ){
+                $strings = array(
+								'title'=>'Subscribe comments RSS',
+								'link'=>get_feed_link('comments_'), 
+								);
+				echo $this->sw_admin->getSubscribeElementForView( $sw_commentsfeed, 'commentsfeed', $img_dir, $img_web_path, $strings );
+            }
+            if( $sw_twitter->show == 1 && $sw_twitter->acount != '' ){
+                $strings = array(
+								'title'=>'Follow me on Twitter',
+								'link'=>'http://twitter.com/'.$sw_twitter->acount, 
+								);
+				echo $this->sw_admin->getSubscribeElementForView( $sw_twitter, 'twitter', $img_dir, $img_web_path, $strings );
+            }
+            if( $sw_feedburner->show == 1 && $sw_feedburner->acount != '' ){
+                $strings = array(
+								'title'=>'Subscribe on FeedBurner',
+								'link'=>'http://feedburner.google.com/fb/a/mailverify?uri='.($sw_feedburner->acount).'&amp;loc=en_US', 
+								);
+				echo $this->sw_admin->getSubscribeElementForView( $sw_feedburner, 'feedburner', $img_dir, $img_web_path, $strings );
+            }
+            if( $sw_facebook->show == 1 && $sw_facebook->acount != '' ){
+            	$strings = array(
+								'title'=>'Facebook',
+								'link'=>$sw_facebook->acount, 
+								);
+                echo $this->sw_admin->getSubscribeElementForView( $sw_facebook, 'facebook', $img_dir, $img_web_path, $strings );
+            }
+            echo '</div>';
+            echo $after_widget;
+		}
+		
+		
+	}
+
+}
+
+/* class is used to handle plugin install and all widget actions */
+class subscribe_widget_admin {
+	var $img_dir;
+	var $aligns;
+	var $link_targets;
+	var $plugin_dir;
+	var $resize;
+	
+	function __construct(){
+		global $wpdb, $table_prefix;
+		
+		$this->wpdb = $wpdb;
+		$this->table_prefix = $table_prefix;
+		$this->img_dir = ABSPATH.'subscribe-widget/';
+		$this->plugin_dir = 'wp-content/plugins/subscribe-plugin/';
+		$this->aligns = array("left", "center", "right");
+		$this->link_targets = array(""=>"In the same window", "_blank"=>"In new window", );
+		$this->resize = new sw_ResizeComponent();
+	}
+	
+	function resizeElementImage( $img_dir_from, $img_name, $elementData, $image_height, $image_width ){
+		if( is_file( $img_dir_from.$elementData['image'] ) ){
+            $image_ext = $this->getExtension( $elementData['image'] );
+            copy( $img_dir_from.$elementData['image'], $this->img_dir.$img_name.'.'.$image_ext ) ;
+            $image = $this->img_dir.$img_name.'.'.$image_ext;
+            $this->resizeImage( $image, $image_height, $image_width );
+        }
+	}
+	
+	/* Functions resize image by width and height. */
+	function resizeImage( $image, $image_height, $image_width ){
+	    if( is_file( $image ) && function_exists(gd_info) ){
+	        list( $width, $height ) = getimagesize( $image );
+	        if($width > $image_width){
+	            $thumb= $this->resize->Resize($image );
+	            $this->resize->size_width($image_width);    
+	            $this->resize->save( $image );       
+	        }
+	        list( $width, $height ) = getimagesize( $image );
+	        if($height > $image_height ){
+	            $thumb= $this->resize->Resize( $image ); 
+	            $this->resize->size_height( $image_height );   
+	            $this->resize->save( $image );       
+	        }
+	    }
+	}
+	
+	/* Functions gets files extension from files name */
+	function getExtension( $fileName ){
+	    $extension = array_reverse(explode( ".", $fileName));
+	    $extension = $extension[0];
+	    return $extension;
+	}
+	
+	function getElementImages( $element_dir ){
+		$images_temp = array();
+        $images = array();
+        if( is_dir( ABSPATH . $this->plugin_dir . 'images/'.$element_dir.'/' ) ){
+            sw_ReadDirectory( ABSPATH . $this->plugin_dir . 'images/'.$element_dir.'/', $images_temp );
+            sw_GetFilesFromPath( $images_temp, $images );
+        }
+        return $images;
+	}
+	
+	function getSubscribeElementForView( $element, $img_name, $img_dir, $img_web_path, $strings ){
+		$html = '';
+		$image_ext = $this->getExtension( $element->image );
+        if( @is_file( $img_dir.$img_name.'.'.$image_ext ) ){
+            if( $element->link_target != '' ){ $target = ' target="'.$element->link_target.'" '; }
+            else { $target = ""; }
+            $html .= '<a title="'.$strings['link_title'].'" '.$target.' rel="nofallow" href="'.$strings['link'].'">';
+            $html .= '<img src="'.$img_web_path.$img_name.'.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="'.$strings['link_title'].'" />';
+            $html .= '</a>';
+        }
+        
+        return $html;
+	}
+	
+	function getSubscribeElementOptions( $elementOptions, $elementTexts, $elementImages, $element_name, $element_dir ){
+		$html_content = '';
+
+		$html_content .= '<div id="'.$element_name.'_box" class="sw-element-box '.$element_name.'">';
+		$html_content .= '<p style="text-align:right">
+                				<label>' . __($elementTexts->show_element) . '</label>';
+        if( $elementOptions->show == 1 ){ $checked = ' checked '; }
+        else { $checked = ''; }
+        $html_content .= '<input '.$checked.' name="'.$element_name.'[show]" type="checkbox" value="1" />';
+        $html_content .= '</p>';
+        
+        if( $elementTexts->acount_name != '' ){
+        	$html_content .= '<p style="text-align:right">
+                <label>' . __($elementTexts->acount_name) . '</label> 
+                <input name="'.$element_name.'[acount]" type="text" value="'.$elementOptions->acount.'" />
+            </p>';
+		}
+        
+        $html_content .= '<p style="text-align:right">
+            					<label>' . __($elementTexts->open_link_in) . '</label> 
+            					<select name="'.$element_name.'[link_target]" ';
+        if( $this->link_targets ){
+            foreach( $this->link_targets as $target=>$name ){
+                if( $elementOptions->link_target == $name ){ $selected = ' selected '; }
+                else { $selected = ''; }
+                $html_content .= '<option value="'.$target.'" '.$selected.'>'.$name.'</option>';
+            }
+        }
+        $html_content .= '</select></p>';
+        
+        $html_content .= '<p style="text-align:right">
+					            <label>' . __($elementTexts->element_image) . '</label> 
+					            <select name="'.$element_name.'[image]" onchange="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" onkeydown="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" >
+                <option value="">-</option>';
+        if( count( $elementImages ) > 0 ){
+            foreach( $elementImages as $image ){
+                if( $elementOptions->image == $image ){ $selected = ' selected '; }
+                else { $selected = ''; }
+                $html_content .= '<option value="'.$image.'" '.$selected.'>'.$image.'</option>';
+            }
+        }
+        $html_content .= '</select></p>';
+        $html_content .= '<p style="text-align:right">
+					            <img id="'.$element_name.'-image" class="'.$element_name.'_img" src="'.get_option("home").'/wp-content/plugins/subscribe-plugin/images/'.$element_dir.'/'.$elementOptions->image.'" style="height:50px; border: 1px solid #999999;" />
+					        </p>';
+		$html_content .= '</div>';
+		return $html_content;
+	}
+	
+	function getStandartOptions( $widgetOptions ){
+		$html_content = '';
+		$html_content .= '<p style="text-align:right">
+								<label for="sw-title">' . __('Title (Optional):') . '</label> 
+								<input style="width: 200px" id="sw-title" name="sw_title" type="text" value="'.$widgetOptions->sw_title.'" />
+							</p>';
+        
+        if( $widgetOptions->sw_showontheme == 1 ){ $checked = ' checked '; }
+        else { $checked = ''; }
+        $html_content .= '<p style="text-align:right">
+								<label for="sw-showontheme">' . __('Show "Subscribe Icons" on the theme*:') . '</label> 
+								<input id="sw-showontheme" '.$checked.' name="sw_showontheme" type="checkbox" value="1" />
+								<small>* icons will be shown only on theme, where php code was inserted. For more details look at the readme file in subscribe-plugin folder</small>
+							</p>';
+        
+        $html_content .= '<p style="text-align:right">
+								<label for="sw-align">' . __('Align images:') . '</label>
+        						<select id="sw-align" name="sw_align">';
+        foreach( $this->aligns as $align ){
+            if( $align == $widgetOptions->sw_align ){ $selected = ' selected '; }
+            else{ $selected = ''; }
+            $html_content .= '<option value="'.$align.'" '.$selected.'>'.$align.'</option>';
+        }
+        $html_content .= '</select></p>';
+        
+        $html_content .= '<p style="text-align:right">
+								<label for="sw-image-height">' . __('Images height *:') . '</label> 
+        						<select id="sw-image-height" name="sw_image_height">';
+        for( $i=20; $i<101; $i=$i+5 ){
+            if( $i == $widgetOptions->sw_image_height ){ $selected = ' selected '; }
+            else{ $selected = ''; }
+			$html_content .= '<option value="'.$i.'" '.$selected.'>'.$i.'</option>'; 
+        }
+        $html_content .= '</select></p>';
+
+        $html_content .= '<p style="text-align:right">
+								<label for="sw-image-width">' . __('Images width *:') . '</label>
+        							<select id="sw-image-width" name="sw_image_width">';
+        for( $i=20; $i<101; $i=$i+5 ){
+            if( $i == $widgetOptions->sw_image_width ){ $selected = ' selected '; }
+            else{ $selected = ''; }
+			$html_content .= '<option value="'.$i.'" '.$selected.'>'.$i.'</option>'; 
+        }
+        $html_content .= '</select><br />
+        	<small>* Image will be resized firstly by width and then by height. If image width will be smaller then selected, then image will be not resized. The same is with image height.</small>
+        	</p>';
+        
+        return $html_content;
+	}
+	
+	function  getWidgetFormFooter(){
+		$html_content = '';
+		$html_content .= '<p style="margin-top: 5px;">If you have any suggestions about this plugin or it not works like it should, write to <a href="mailto:kestas.mindziulis@gmail.com">me</a></p>';
+        $html_content .= '<input type="hidden" name="sw_submit" value="1" />';
+        return $html_content;
+	}
+	
+	/* function converts array to object */
+	function array2Object( $array = array() ){
+		$object = (object)array();
+		if( count( $array ) > 0 ){
+			foreach( $array as $field => $value ){
+				$object->$field = $value;
+			}
+		}
+		return $object;
+	}
+	
+	/* functions install plugin and creates folder on the root folder */
+	function installPlugin(){
+		if( !is_dir( $this->img_dir ) ){
+        	mkdir( $this->img_dir, 0777 );
+	    }
+	    else { chmod( $this->img_dir, 0777 ); }
+	}
+}
+
+
 /* Resize class - start */
-class ResizeComponent
-{
+class sw_ResizeComponent {
     var $img;
 
-    function Resize($imgfile)
-    {
+    function Resize($imgfile){
         //detect image format
         $this->img["format"]=ereg_replace(".*\.(.*)$","\\1",$imgfile);
         $this->img["format"]=strtoupper($this->img["format"]);
@@ -700,22 +733,19 @@ class ResizeComponent
         $this->img["quality"]=100;
     }
 
-    function size_height($size=100)
-    {
+    function size_height($size=100){
         //height
         $this->img["height_thumb"]=$size;
         @$this->img["width_thumb"] = ($this->img["height_thumb"]/$this->img["height"])*$this->img["width"];
     }
 
-    function size_width($size=100)
-    {
+    function size_width($size=100){
         //width
         $this->img["width_thumb"]=$size;
         @$this->img["height_thumb"] = ($this->img["width_thumb"]/$this->img["width"])*$this->img["height"];
     }
 
-    function size_auto($size=100)
-    {
+    function size_auto($size=100){
         //size
         if ($this->img["width"]>=$this->img["height"]) {
             $this->img["width_thumb"]=$size;
@@ -726,17 +756,14 @@ class ResizeComponent
         }
     }
 
-    function jpeg_quality($quality=75)
-    {
+    function jpeg_quality($quality=75){
         //jpeg quality
         $this->img["quality"]=$quality;
     }
 
-    function show()
-    {
+    function show(){
         //show thumb
         @Header("Content-Type: image/".$this->img["format"]);
-
         /* change ImageCreateTrueColor to ImageCreate if your GD not supported ImageCreateTrueColor function*/
         $this->img["des"] = ImageCreateTrueColor($this->img["width_thumb"],$this->img["height_thumb"]);
             @imagecopyresized ($this->img["des"], $this->img["src"], 0, 0, 0, 0, $this->img["width_thumb"], $this->img["height_thumb"], $this->img["width"], $this->img["height"]);
@@ -756,8 +783,7 @@ class ResizeComponent
         }
     }
 
-    function save($save="")
-    {
+    function save($save=""){
         //save thumb
         if (empty($save)) $save=strtolower("./thumb.".$this->img["format"]);
         /* change ImageCreateTrueColor to ImageCreate if your GD not supported ImageCreateTrueColor function*/
@@ -778,8 +804,7 @@ class ResizeComponent
 		imagealphablending($this->img["des"], false); // turn off the alpha blending to keep the alpha channel
 	}
 	else
-            @imagecopyresampled ($this->img["des"], $this->img["src"], 0, 0, 0, 0, $this->img["width_thumb"], $this->img["height_thumb"], $this->img["width"], $this->img["height"]);
-
+        @imagecopyresampled ($this->img["des"], $this->img["src"], 0, 0, 0, 0, $this->img["width_thumb"], $this->img["height_thumb"], $this->img["width"], $this->img["height"]);
         if ($this->img["format"]=="JPG" || $this->img["format"]=="JPEG") {
             //JPEG
             imageJPEG($this->img["des"],$save,$this->img["quality"]);
@@ -798,9 +823,6 @@ class ResizeComponent
 
 }
 /* Resize class - end */
-
-// Run our code later in case this loads prior to any required plugins.
-add_action('widgets_init', array('subscribeWidget','init'));
 
 
 ?>

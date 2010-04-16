@@ -1,5 +1,10 @@
-﻿Subscribe widget
+Subscribe widget
 by Kęstas Mindžiulis
+
+V2.0.0 - 16.04.2010
+- Added: FaceBook
+- Changed: Rewrited plugin using new WP widget engine.
+- Added: Wp version checker. If wp version is not supported by plugin, widget will not work.
 
 V1.1.5 - 07.05.2009
 - Added: Function that could display subscribe icons anywhere on the theme

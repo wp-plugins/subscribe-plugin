@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 2.0.1
+Version: 2.0.2
 Plugin URI: http://www.itlastnews.com/subscribe-widget-plugin
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis

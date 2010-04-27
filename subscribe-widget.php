@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 2.0.0
+Version: 2.0.1
 Plugin URI: http://www.itlastnews.com/subscribe-widget-plugin
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -15,23 +15,28 @@ register_activation_hook( __FILE__, array( &$sw_admin, 'installPlugin' ) );
 
 function sw_displaySubscribeWidget( $type="post" ){
     $html_content = '';
-    $options = get_option('subscribe_widget');
-    $title = htmlspecialchars($options['sw-title'], ENT_QUOTES);
-    $sw_postsfeed = $options['sw-postsfeed'];
-    $sw_commentsfeed = $options['sw-commentsfeed'];
-    $sw_twitter = $options['sw-twitter'];
-    $sw_feedburner = $options['sw-feedburner'];
+           
+    $sw_admin = new subscribe_widget_admin();
+	$options = get_option('subscribe_widget');
+    $widgetOptions = $sw_admin->array2Object( $options );
+    $title = htmlspecialchars($widgetOptions->sw_title, ENT_QUOTES);
     
-    $all_images_url = get_option("home").'/subscribe-widget/';
-    $all_images_dir = ABSPATH.'subscribe-widget/';
+    $img_web_path = get_option("home").'/subscribe-widget/';
+    $img_dir = ABSPATH.'subscribe-widget/';
     
     if( !function_exists(gd_info) ){
-        $image_width = " width: ".$options['sw-image-width']."px;";
+        $image_width = " width: ".$widgetOptions->sw_image_width."px;";
     }
     else { $image_width = ''; }
     
+    $sw_postsfeed = $sw_admin->array2Object( $widgetOptions->sw_postsfeed );
+    $sw_commentsfeed = $sw_admin->array2Object( $widgetOptions->sw_commentsfeed );
+    $sw_twitter = $sw_admin->array2Object( $widgetOptions->sw_twitter );
+    $sw_feedburner = $sw_admin->array2Object( $widgetOptions->sw_feedburner );
+    $sw_facebook = $sw_admin->array2Object( $widgetOptions->sw_facebook );
     // These lines generate our output.
-    if( ($sw_postsfeed['show'] == 1 || $sw_commentsfeed['show'] == 1 || $sw_twitter['show'] == 1 || $sw_feedburner['show'] == 1) && ($options['sw-showontheme'] == 1 ) ){
+	if( ($sw_postsfeed->show == 1 || $sw_commentsfeed->show == 1 || $sw_twitter->show == 1 || $sw_feedburner->show == 1) && ($widgetOptions->sw-showontheme != 1 ) ){
+        
         
         if( $type != 'post' ) { $html_content .= '<div id="subscribe-widget-theme">'; }
         if( $title != '' ){
@@ -39,54 +44,44 @@ function sw_displaySubscribeWidget( $type="post" ){
         }
         if( $type == 'post' ){ $html_content .= '<p>'; }
         
-        if( $sw_postsfeed['show'] == 1  ){
-            $image_ext = sw_getExtension( $sw_postsfeed['image'] );
-            if( is_file( $all_images_dir.'postsfeed.'.$image_ext ) ){
-                if( $sw_postsfeed['link_target'] != '' ){ $target = ' target="'.$sw_postsfeed['link_target'].'" '; }
-                else { $target = ""; }
-                $html_content .= '<a title="Subscribe RSS" '.$target.' href="'.get_feed_link().'">';
-                $html_content .= '<img src="'.$all_images_url.'postsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe RSS" />';
-                $html_content .= '</a>';
-            }
+        if( $sw_postsfeed->show == 1  ){
+            $strings = array(
+							'title'=>'Subscribe RSS',
+							'link'=>get_feed_link(), 
+							);
+			$html_content .= $sw_admin->getSubscribeElementForView( $sw_postsfeed, 'postsfeed', $img_dir, $img_web_path, $strings );
         }
-        if( $sw_commentsfeed['show'] == 1 ){
-            $image_ext = sw_getExtension( $sw_commentsfeed['image'] );
-            if( is_file( $all_images_dir.'commentsfeed.'.$image_ext ) ){
-                if( $sw_commentsfeed['link_target'] != '' ){ $target = ' target="'.$sw_commentsfeed['link_target'].'" '; }
-                else { $target = ""; }
-                if( $type == 'post' ){
-                    global $post;
-                    if( $post->ID != '' ) { $comments_feed_link = get_post_comments_feed_link( $post->ID ); }
-                    else { $comments_feed_link = get_feed_link('comments_'); }
-                }
-                else { $comments_feed_link = get_feed_link('comments_'); }
-                $html_content .= '<a title="Subscribe comments RSS" '.$target.' href="'.$comments_feed_link.'">';
-                $html_content .= '<img src="'.$all_images_url.'commentsfeed.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;'.$image_width.'" alt="Subscribe comments RSS" />';
-                $html_content .= '</a>';
-            }
+        if( $sw_commentsfeed->show == 1 ){
+            $strings = array(
+							'title'=>'Subscribe comments RSS',
+							'link'=>get_feed_link('comments_'), 
+							);
+			$html_content .= $sw_admin->getSubscribeElementForView( $sw_commentsfeed, 'commentsfeed', $img_dir, $img_web_path, $strings );
         }
-        if( $sw_twitter['show'] == 1 && $sw_twitter['acount'] != '' ){
-            $image_ext = sw_getExtension( $sw_twitter['image'] );
-            if( is_file( $all_images_dir.'twitter.'.$image_ext ) ){
-                if( $sw_twitter['link_target'] != '' ){ $target = ' target="'.$sw_twitter['link_target'].'" '; }
-                else { $target = ""; }
-                $html_content .= '<a title="Follow me on Twitter" '.$target.' href="http://twitter.com/'.($sw_twitter['acount']).'">';
-                $html_content .= '<img src="'.$all_images_url.'twitter.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Follow me on Twitter" />';
-                $html_content .= '</a>';
-            }
+        if( $sw_twitter->show == 1 && $sw_twitter->acount != '' ){
+            $strings = array(
+							'title'=>'Follow me on Twitter',
+							'link'=>'http://twitter.com/'.$sw_twitter->acount, 
+							);
+			$html_content .= $sw_admin->getSubscribeElementForView( $sw_twitter, 'twitter', $img_dir, $img_web_path, $strings );
         }
-        if( $sw_feedburner['show'] == 1 && $sw_feedburner['acount'] != '' ){
-            $image_ext = sw_getExtension( $sw_feedburner['image'] );
-            if( is_file( $all_images_dir.'feedburner.'.$image_ext ) ){
-                if( $sw_feedburner['link_target'] != '' ){ $target = ' target="'.$sw_feedburner['link_target'].'" '; }
-                else { $target = ""; }
-                $html_content .= '<a title="Subscribe on FeedBurner" '.$target.' rel="nofallow" href="http://feedburner.google.com/fb/a/mailverify?uri='.($sw_feedburner['acount']).'&amp;loc=en_US">';
-                $html_content .= '<img src="'.$all_images_url.'feedburner.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px; '.$image_width.'" alt="Subscribe on FeedBurner" />';
-                $html_content .= '</a>';
-            }
+        if( $sw_feedburner->show == 1 && $sw_feedburner->acount != '' ){
+            $strings = array(
+							'title'=>'Subscribe on FeedBurner',
+							'link'=>'http://feedburner.google.com/fb/a/mailverify?uri='.($sw_feedburner->acount).'&amp;loc=en_US', 
+							);
+			$html_content .= $sw_admin->getSubscribeElementForView( $sw_feedburner, 'feedburner', $img_dir, $img_web_path, $strings );
         }
-        if( $type == 'post' ){ $html_content .= '</p>'; }
-        else { $html_content .= '</div>'; }
+        if( $sw_facebook->show == 1 && $sw_facebook->acount != '' ){
+        	$strings = array(
+							'title'=>'Facebook',
+							'link'=>$sw_facebook->acount, 
+							);
+            $html_content .= $sw_admin->getSubscribeElementForView( $sw_facebook, 'facebook', $img_dir, $img_web_path, $strings );
+        }
+
+    	if( $type == 'post' ){ $html_content .= '</p>'; }
+    	else { $html_content .= '</div>'; }
     }
     return $html_content;
 }
@@ -410,8 +405,12 @@ class sw_SubscribeWidget extends WP_Widget {
 			$widget_content .= $this->sw_admin->getWidgetFormFooter();
 		}
 		else {
-            $widget_content .= '<p>';
-            $widget_content .= 'Plugin couldn\'t create directory on the server.  Please add to this folder `'.ABSPATH.'` permissions 0777 and reinstall plugin, or create inside this folder directory "subscribe-widget" and add permissions 0777. This is important for the plugin. When folder will be created you can change back permissions on the root folder ';
+			@mkdir( $this->sw_admin->img_dir );
+			if( is_dir( $this->sw_admin->img_dir ) ){
+            	$widget_content .= '<p>';
+            	$widget_content .= 'Plugin couldn\'t create directory on the server.  Please add to this folder `'.ABSPATH.'` permissions 0777 and reinstall plugin, or create inside this folder directory "subscribe-widget" and add permissions 0777. This is important for the plugin. When folder will be created you can change back permissions on the root folder "'.ABSPATH.'"';
+            	$widget_content .= '</p>';
+            }
         }
         echo $widget_content;
 	}
@@ -564,8 +563,11 @@ class subscribe_widget_admin {
         if( @is_file( $img_dir.$img_name.'.'.$image_ext ) ){
             if( $element->link_target != '' ){ $target = ' target="'.$element->link_target.'" '; }
             else { $target = ""; }
+            $img_size = @getimagesize( $img_dir.$img_name.'.'.$image_ext );
+            if( is_array( $img_size ) ){ $img_size = $img_size[2]; }
+            else { $img_size = ''; }
             $html .= '<a title="'.$strings['link_title'].'" '.$target.' rel="nofallow" href="'.$strings['link'].'">';
-            $html .= '<img src="'.$img_web_path.$img_name.'.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="'.$strings['link_title'].'" />';
+            $html .= '<img '.$img_size.' src="'.$img_web_path.$img_name.'.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="'.$strings['link_title'].'" />';
             $html .= '</a>';
         }
         

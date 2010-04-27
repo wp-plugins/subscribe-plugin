@@ -1,5 +1,10 @@
-Subscribe widget
+﻿Subscribe widget
 by Kęstas Mindžiulis
+
+
+V2.0.1 - 27.04.2010
+- Changed: "subscribe-widget" directory check.
+- Updated: sw_displaySubscribeWidget function.
 
 V2.0.0 - 16.04.2010
 - Added: FaceBook

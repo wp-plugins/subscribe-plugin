@@ -1,10 +1,10 @@
-=== Subscribe Widget ===
+﻿=== Subscribe Widget ===
 Contributors: Kęstas Mindžiulis
 Donate link: http://www.itlastnews.com/subscribe-widget-plugin
 Tags: Subscribe, widget, rss, twitter, reader, sidebar, feed, feedburner, rss reader
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 
 Sidebar widget to easy customize and display your subscribers buttons. All settings are available from Sidebar Widget Admin.
 

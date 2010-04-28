@@ -1,6 +1,8 @@
 ﻿Subscribe widget
 by Kęstas Mindžiulis
 
+V2.0.3 - 28.04.2010
+- Bugfix: Bug fixing.
 
 V2.0.1 - 27.04.2010
 - Changed: "subscribe-widget" directory check.

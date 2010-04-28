@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 2.0.2
+Version: 2.0.3
 Plugin URI: http://www.itlastnews.com/subscribe-widget-plugin
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -213,6 +213,7 @@ class sw_SubscribeWidget extends WP_Widget {
 	var $sw_admin;
 	function sw_SubscribeWidget() {
 		$this->sw_admin = new subscribe_widget_admin();
+		@mkdir( $this->sw_admin->img_dir );
 		
 		$options = get_option('subscribe_widget');
 		/* assign older values to new structure */
@@ -405,12 +406,9 @@ class sw_SubscribeWidget extends WP_Widget {
 			$widget_content .= $this->sw_admin->getWidgetFormFooter();
 		}
 		else {
-			@mkdir( $this->sw_admin->img_dir );
-			if( is_dir( $this->sw_admin->img_dir ) ){
-            	$widget_content .= '<p>';
-            	$widget_content .= 'Plugin couldn\'t create directory on the server.  Please add to this folder `'.ABSPATH.'` permissions 0777 and reinstall plugin, or create inside this folder directory "subscribe-widget" and add permissions 0777. This is important for the plugin. When folder will be created you can change back permissions on the root folder "'.ABSPATH.'"';
-            	$widget_content .= '</p>';
-            }
+        	$widget_content .= '<p>';
+        	$widget_content .= 'Plugin couldn\'t create directory on the server.  Please add to this folder `'.ABSPATH.'` permissions 0777 and reinstall plugin, or create inside this folder directory "subscribe-widget" and add permissions 0777. This is important for the plugin. When folder will be created you can change back permissions on the root folder "'.ABSPATH.'"';
+        	$widget_content .= '</p>';
         }
         echo $widget_content;
 	}
@@ -564,7 +562,7 @@ class subscribe_widget_admin {
             if( $element->link_target != '' ){ $target = ' target="'.$element->link_target.'" '; }
             else { $target = ""; }
             $img_size = @getimagesize( $img_dir.$img_name.'.'.$image_ext );
-            if( is_array( $img_size ) ){ $img_size = $img_size[2]; }
+            if( is_array( $img_size ) ){ $img_size = $img_size[3]; }
             else { $img_size = ''; }
             $html .= '<a title="'.$strings['link_title'].'" '.$target.' rel="nofallow" href="'.$strings['link'].'">';
             $html .= '<img '.$img_size.' src="'.$img_web_path.$img_name.'.'.$image_ext.'" border="0" style="margin-right:5px;margin-left:5px;" alt="'.$strings['link_title'].'" />';

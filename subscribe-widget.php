@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe widget
-Version: 2.0.3
+Version: 2.0.4
 Plugin URI: http://www.itlastnews.com/subscribe-widget-plugin
 Description: Adds a subscribe widget to the sidebar. 
 Author: Kestas Mindziulis
@@ -173,16 +173,12 @@ function sw_adminHead(){
     ?>
     <style type="text/css" >
     .sw-element-box { border: 1px solid #999999; padding:3px; margin-bottom:6px; }
-    </style>
-    
-    <script type="text/javascript">
-    
-
+    </style>  
+    <script type="text/javascript">   
 	jQuery(document).ready(function() {
 		jQuery(".sw-element-box").css({display: "none"}); // Opera Fix
 		
-	});
-	
+	});	
 	function sw_expand( clicker, box ){
 		jQuery( clicker ).parent().html( '<a href="#" class="show-element-box" onclick="sw_shrink( this, \''+box+'\' ); return false;">[-]</a>' );
 		jQuery( box ).css({display: "block"});
@@ -199,13 +195,12 @@ function sw_adminHead(){
 		img_src = '<?php echo get_option( 'siteurl' ); ?>/wp-content/plugins/subscribe-plugin/images/'+img_path+'/'+image;
 		jQuery( box ).attr( "src", img_src );
 	}
-	
     </script>
     <?php
 }
 
 function sw_loadSubscribeWidget() {
-  register_widget('sw_SubscribeWidget');
+	register_widget('sw_SubscribeWidget');
 }
 add_action('widgets_init', 'sw_loadSubscribeWidget');
 
@@ -499,6 +494,10 @@ class subscribe_widget_admin {
 	var $plugin_dir;
 	var $resize;
 	
+	function subscribe_widget_admin(){
+		$this->__construct();
+	}
+	
 	function __construct(){
 		global $wpdb, $table_prefix;
 		
@@ -604,7 +603,7 @@ class subscribe_widget_admin {
         
         $html_content .= '<p style="text-align:right">
 					            <label>' . __($elementTexts->element_image) . '</label> 
-					            <select name="'.$element_name.'[image]" onchange="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" onkeydown="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" >
+					            <select name="'.$element_name.'[image]" onchange="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" onkeydown="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" onkeyup="sw_changeImg( this, \'.'.$element_name.'_img\', \''.$element_dir.'\' )" >
                 <option value="">-</option>';
         if( count( $elementImages ) > 0 ){
             foreach( $elementImages as $image ){
